@@ -286,8 +286,12 @@ def flight_view(f, now_ms, full=False):
     if full:
         v["stops"] = [{"id": t["id"], "name": t.get("name"), "due": fmt_when(t.get("due")),
                        "done": fmt_when(t.get("tornAt"))} for t in tickets]
-        if f.get("task"):
-            v["task"] = f["task"]
+        t = f.get("task") or {}
+        for out_k, k in (("notes", "notes"), ("done_when", "done"), ("next_step", "hyp"), ("if_yes", "yes"), ("if_no", "no"), ("stopped_at", "stopped")):
+            if t.get(k):
+                v[out_k] = t[k]
+    if f.get("due") and not f.get("departedAt") and f["due"] < now_ms:
+        v["overdue_hours"] = round((now_ms - f["due"]) / 3_600_000, 1)
     return v
 
 
@@ -389,14 +393,16 @@ TOOLS = [
          "express": {"type": "boolean", "description": "priority flight, boards first"},
          "done_when": {"type": "string", "description": "Work task: what finished looks like"},
          "next_step": {"type": "string", "description": "Work task: hypothesis / next step"},
-         "if_yes": {"type": "string"}, "if_no": {"type": "string"}},
+         "if_yes": {"type": "string"}, "if_no": {"type": "string"},
+         "notes": {"type": "string", "description": "free-text description / context for the task (up to 2000 chars). Put background, links and details here, not in next_step."}},
          "required": ["name"]}},
     {"name": "update_flight", "description": "Rename, reschedule or change a flight. Only the fields you pass change. Set departs to 'none' to clear the deadline.",
      "inputSchema": {"type": "object", "properties": {
          "flight": {"type": "string"}, "name": {"type": "string"}, "line": {"type": "string"},
          "departs": {"type": "string"}, "express": {"type": "boolean"}, "spread_stops": {"type": "boolean"},
          "done_when": {"type": "string"}, "next_step": {"type": "string"}, "if_yes": {"type": "string"}, "if_no": {"type": "string"},
-         "stopped_at": {"type": "string", "description": "where work stopped, so it can be picked up later"}},
+         "stopped_at": {"type": "string", "description": "where work stopped, so it can be picked up later"},
+         "notes": {"type": "string", "description": "replace the free-text description / context"}},
          "required": ["flight"]}},
     {"name": "add_stops", "description": "Add stops (sub-steps) to the end of an existing flight, optionally with due dates.",
      "inputSchema": {"type": "object", "properties": {
@@ -427,16 +433,16 @@ def _dates(stops, dates):
 
 
 def _task_update(f, a):
-    keys = {"done_when": "done", "next_step": "hyp", "if_yes": "yes", "if_no": "no", "stopped_at": "stopped"}
+    keys = {"done_when": "done", "next_step": "hyp", "if_yes": "yes", "if_no": "no", "stopped_at": "stopped", "notes": "notes"}
     if not any(k in a for k in keys):
         return
-    t = dict(f.get("task") or {"done": "", "hyp": "", "yes": "", "no": "", "stopped": "", "stoppedAt": None})
+    t = dict(f.get("task") or {"done": "", "hyp": "", "yes": "", "no": "", "stopped": "", "stoppedAt": None, "notes": ""})
     for k, tk in keys.items():
         if k in a:
-            t[tk] = str(a[k] or "")[:300]
+            t[tk] = str(a[k] or "")[:2000 if k == "notes" else 300]
     if "stopped_at" in a:
         t["stoppedAt"] = _ms(time.time()) if t["stopped"] else None
-    f["task"] = t if any(t.get(k) for k in ("done", "hyp", "yes", "no", "stopped")) else None
+    f["task"] = t if any(t.get(k) for k in ("done", "hyp", "yes", "no", "stopped", "notes")) else None
 
 
 def run_tool(uid, name, a):
@@ -577,7 +583,10 @@ def mcp_dispatch(uid, m):
                    "serverInfo": {"name": "next-stop", "title": "Next Stop", "version": "1.0.0"},
                    "instructions": "Next Stop is the user's task planner themed as an airport departures board. "
                                    "A flight = a task with a deadline, stops = its sub-steps, boarding = starting work, departing = done. "
-                                   "Times are IST (+05:30). Prefer agenda / list_flights before changing things."})
+                                   "Times are IST (+05:30). Prefer agenda / list_flights before changing things. "
+                                   "Put the task description/context in `notes` (next_step is only the next action or hypothesis). "
+                                   "If a name, acronym or customer in the request is unclear or looks like a typo, ask before booking; never silently correct it. "
+                                   "Flights with overdue_hours are past their deadline: point them out and offer to reschedule (update_flight departs) or finish (depart_flight) instead of just listing them."})
     if method == "ping":
         return ok({})
     if method == "tools/list":

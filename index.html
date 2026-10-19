@@ -1004,8 +1004,8 @@ function normFlight(d, id) {
 function normTask(t) {
   if (!t || typeof t !== 'object') return null;
   const s = k => String(t[k] || '').slice(0, 300);
-  const o = { done: s('done'), hyp: s('hyp'), yes: s('yes'), no: s('no'), stopped: s('stopped'), stoppedAt: Number.isFinite(t.stoppedAt) ? t.stoppedAt : null };
-  return (o.done || o.hyp || o.yes || o.no || o.stopped) ? o : null;
+  const o = { done: s('done'), hyp: s('hyp'), yes: s('yes'), no: s('no'), stopped: s('stopped'), stoppedAt: Number.isFinite(t.stoppedAt) ? t.stoppedAt : null, notes: String(t.notes || '').slice(0, 2000) };
+  return (o.done || o.hyp || o.yes || o.no || o.stopped || o.notes) ? o : null;
 }
 function flightDoc(f) {
   return { id: f.id, no: f.no, name: f.name, line: f.line, express: f.express, due: f.due, createdAt: f.createdAt, departedAt: f.departedAt, boardedAt: f.boardedAt, sample: f.sample, task: f.task || null, tickets: f.tickets.map(t => ({ id: t.id, name: t.name, tornAt: t.tornAt, due: t.due })) };
@@ -1811,6 +1811,7 @@ function taskCardHTML(f) {
     '<div class="tc-top"><span class="task-head dotted">TASK</span><span style="display:flex;gap:6px">' +
       '<button type="button" class="btn ghost sm" data-act="copy-task">Copy for Jira</button>' +
       '<button type="button" class="btn ghost sm" data-act="edit">' + IC.edit + 'Edit</button></span></div>' +
+    (t.notes ? '<div><div class="tc-k">Notes</div><div class="tc-v" style="white-space:pre-wrap">' + esc(t.notes) + '</div></div>' : '') +
     '<div><div class="tc-k">Done when</div>' + v(t.done, 'Not written yet. Write it before touching the setup.') + '</div>' +
     '<div><div class="tc-k">Next step · hypothesis</div>' + v(t.hyp, 'No hypothesis yet.') +
       ((t.yes || t.no) ? '<div class="tc-yn">' + (t.yes ? '<span><b>If yes →</b> ' + esc(t.yes) + '</span>' : '') + (t.no ? '<span><b class="n">If no →</b> ' + esc(t.no) + '</span>' : '') + '</div>' : '') + '</div>' +
