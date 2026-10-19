@@ -1,0 +1,367 @@
+<!-- ===== github.io test build add-on: first-use guide, field tips, feedback, backup ===== -->
+<style>
+.ns-fb{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:85;display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.18);background:#111113;color:#F6C64B;border-radius:999px;padding:9px 13px 8px;font:800 11px/1 "Archivo",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
+.ns-fb:hover{filter:brightness(1.15)}
+.ns-ver{position:fixed;right:10px;max-width:45vw;overflow:hidden;white-space:nowrap;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:84;font:700 10px/1 "Doto","Courier New",monospace;color:var(--ink-soft,#5D5950);opacity:.7;pointer-events:none}
+.ns-tour{position:fixed;inset:0;z-index:95;pointer-events:none}
+.ns-tour[hidden]{display:none}
+.ns-shade{position:fixed;inset:0;background:rgba(10,10,10,.62);pointer-events:auto}
+.ns-hole{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(10,10,10,.62),0 0 0 3px #F6C64B;pointer-events:none;transition:all .28s cubic-bezier(.3,1,.4,1)}
+.ns-bub{position:fixed;width:min(360px,calc(100vw - 24px));background:#0D0D0D;color:#F3F0E8;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 16px 14px;pointer-events:auto;box-shadow:0 24px 50px -16px rgba(0,0,0,.7);transition:top .28s,left .28s}
+.ns-bub .k{display:flex;justify-content:space-between;gap:8px;font:800 11px/1 "Doto","Courier New",monospace;letter-spacing:.12em;color:#F6C64B;text-transform:uppercase;margin-bottom:8px}
+.ns-bub .k i{font-style:normal;padding:3px 7px 2px;border-radius:5px;background:#F6C64B;color:#111}
+.ns-bub .k i.opt{background:transparent;color:#4CCB8C;border:1px solid #4CCB8C}
+.ns-bub h3{margin:0 0 6px;font:800 19px/1.15 "Archivo",Arial,sans-serif;font-stretch:88%}
+.ns-bub p{margin:0 0 12px;font:500 14px/1.45 "Archivo",Arial,sans-serif;color:rgba(243,240,232,.86)}
+.ns-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ns-row .sp{flex:1}
+.ns-b{border:0;border-radius:8px;padding:10px 13px;font:800 11.5px/1 "Archivo",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.ns-b.p{background:#E03A2D;color:#fff}.ns-b.g{background:transparent;color:#F3F0E8;box-shadow:inset 0 0 0 1.5px rgba(243,240,232,.45)}.ns-b.t{background:transparent;color:rgba(243,240,232,.8);padding:10px 4px}
+.ns-b:focus-visible{outline:2px solid #F6C64B;outline-offset:2px}.ns-b:focus:not(:focus-visible){outline:none}
+body{padding-bottom:64px}
+body.ns-touring .ns-fb{display:none}
+.ns-dots{display:flex;gap:4px}.ns-dots b{width:6px;height:6px;border-radius:50%;background:#333}.ns-dots b.on{background:#F6C64B}
+.ns-tipbar{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:11px 13px;border-radius:10px;background:#111113;color:#F3F0E8;font:600 13.5px/1.4 "Archivo",Arial,sans-serif}
+.ns-tipbar b{color:#F6C64B}
+.ns-tipbar button{flex:none;border:0;background:transparent;color:rgba(243,240,232,.65);text-decoration:underline;cursor:pointer;font:700 12px/1.4 "Archivo",Arial,sans-serif}
+.ns-hint{display:flex;gap:8px;align-items:baseline;margin-top:8px;font:600 12.5px/1.4 "Archivo",Arial,sans-serif;color:var(--ink-soft,#5D5950)}
+.ns-hint i{flex:none;font:800 9.5px/1 "Archivo",Arial,sans-serif;font-style:normal;letter-spacing:.12em;padding:4px 6px 3px;border-radius:5px;background:#E03A2D;color:#fff}
+.ns-hint i.opt{background:transparent;color:#2a8a5a;box-shadow:inset 0 0 0 1.5px #2a8a5a}
+.ns-gate{position:fixed;inset:0;z-index:99;display:grid;place-items:center;padding:16px;background:rgba(10,10,10,.93);overflow:auto}
+.ns-gate[hidden]{display:none}
+.ns-card{width:min(420px,100%);background:#0D0D0D;color:#F3F0E8;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.8)}
+.ns-card-h{position:relative;background:#111113;padding:24px 20px 16px;border-bottom:1px dashed rgba(255,255,255,.18)}
+.ns-card-h::before{content:"";position:absolute;left:12px;right:12px;top:8px;height:2px;background:currentColor;opacity:.85}
+.ns-card-h small{display:block;font:800 11px/1 "Doto","Courier New",monospace;letter-spacing:.14em;color:#F6C64B;text-transform:uppercase;margin-bottom:8px}
+.ns-card-h h2{margin:0;font:800 26px/1.05 "Archivo",Arial,sans-serif;font-stretch:88%}
+.ns-card form{display:grid;gap:14px;padding:18px 20px 20px}
+.ns-card label{display:grid;gap:6px;font:800 11px/1.2 "Archivo",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,240,232,.7)}
+.ns-card input{font:700 17px/1.2 "Archivo",Arial,sans-serif;color:#F3F0E8;background:#1a1a1a;border:1.5px solid #333;border-radius:9px;padding:11px 12px;width:100%}
+.ns-card input:focus{outline:none;border-color:#F6C64B}
+.ns-card p{margin:0;font:500 12.5px/1.45 "Archivo",Arial,sans-serif;color:rgba(243,240,232,.62)}
+.ns-card .err{color:#FF6E60;font-weight:700}
+.ns-card .ns-b{padding:13px 15px;font-size:12.5px}
+.ns-guide{display:grid;gap:10px}
+.ns-guide ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:g}
+.ns-guide li{counter-increment:g;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border-radius:10px;background:var(--field,#fff);box-shadow:inset 0 0 0 1.5px var(--rule,rgba(0,0,0,.15));font:500 13.5px/1.45 "Archivo",Arial,sans-serif;color:var(--ink,#17161A)}
+.ns-guide li::before{content:counter(g);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#111113;color:#F6C64B;font:800 13px/1 "Doto","Courier New",monospace}
+.ns-guide li .gt{display:block;font-weight:800;margin-bottom:2px}.ns-guide li b{font-weight:800}
+.ns-guide li i{font-style:normal;font:800 9.5px/1 "Archivo",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:3px 6px 2px;border-radius:4px;margin-left:6px;vertical-align:2px;background:#E03A2D;color:#fff}
+.ns-guide li i.opt{background:transparent;color:#2a8a5a;box-shadow:inset 0 0 0 1.5px #2a8a5a}
+.ns-help-btn{flex:none;height:34px;padding:0 12px;border-radius:999px;border:1.5px solid rgba(243,240,232,.4);background:transparent;color:inherit;font:800 11px/1 "Archivo",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:auto;margin-right:6px}
+@media(max-width:480px){.ns-help-btn .l{display:none}}
+.ns-help-btn[aria-pressed="true"]{background:#F6C64B;color:#111;border-color:#F6C64B}
+.ns-who{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font:600 14px/1.3 "Archivo",Arial,sans-serif}
+@media (prefers-color-scheme: dark){.ns-hint i.opt{color:#4CCB8C;box-shadow:inset 0 0 0 1.5px #4CCB8C}}
+.ns-acts{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+
+<button type="button" class="ns-fb" id="nsFb" title="Something broken or confusing? Tell us"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4h11l1 3h4v9h-8l-1-3H4"/></svg>Report a problem</button>
+<span class="ns-ver" id="nsVer"></span>
+<div class="ns-gate" id="nsGate" hidden><div class="ns-card" role="dialog" aria-modal="true" aria-labelledby="nsGateT">
+  <div class="ns-card-h"><small>Check-in · test build</small><h2 id="nsGateT">Welcome aboard</h2></div>
+  <form id="nsGateF" novalidate autocomplete="on">
+    <p>This is a test version of <b>Next Stop</b>. Please check in with your name and email so we can follow up on your feedback.</p>
+    <label for="nsGName">Your name<input id="nsGName" name="name" autocomplete="name" maxlength="80" placeholder="e.g. Priya Sharma" required></label>
+    <label for="nsGMail">Email<input id="nsGMail" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" placeholder="you@company.com" required></label>
+    <p class="err" id="nsGErr" hidden></p>
+    <button type="submit" class="ns-b p">Check in &amp; board</button>
+    <p>We log your check-in, visits, flights booked and problem reports to see where the app breaks. Your task names stay on this device and are never uploaded.</p>
+  </form>
+</div></div>
+<div class="ns-tour" id="nsTour" hidden><div class="ns-hole" id="nsHole"></div><div class="ns-bub" id="nsBub" role="dialog" aria-live="polite"></div></div>
+
+<script>
+(() => {
+'use strict';
+const VERSION = '__VERSION__';
+const REPO = 'https://github.com/__REPO__';
+const K_TOUR = 'next-stop:tour-done', K_TIPS = 'next-stop:tips-done', LS = 'next-stop:v1';
+const $ = (s, el = document) => el.querySelector(s);
+const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } };
+const flightsCount = () => { try { const d = JSON.parse(get(LS) || 'null'); return d && Array.isArray(d.flights) ? d.flights.length : 0; } catch (e) { return 0; } };
+$('#nsVer').textContent = 'test build ' + VERSION;
+
+/* ---------- Tester check-in + event log (Google Sheet via Apps Script, queued when offline) ---------- */
+const LOG_URL = '__LOG_URL__', LOG_KEY = 'nextstop-testers', K_ME = 'next-stop:tester', K_Q = 'next-stop:logq';
+const me = () => { try { return JSON.parse(get(K_ME) || 'null'); } catch (e) { return null; } };
+const readQ = () => { try { return JSON.parse(get(K_Q) || '[]'); } catch (e) { return []; } };
+function track(type, detail) {
+  const t = me(); if (!t) return;
+  const q = readQ();
+  q.push({ type, detail: detail || '', at: new Date().toISOString(), tid: t.tid, name: t.name, email: t.email, ua: navigator.userAgent + ' | ' + innerWidth + 'x' + innerHeight, v: VERSION });
+  set(K_Q, JSON.stringify(q.slice(-300)));
+  flush();
+}
+let flushing = false;
+async function flush() {
+  if (flushing || !/^https:\/\//.test(LOG_URL) || !navigator.onLine) return;
+  const q = readQ(); if (!q.length) return;
+  flushing = true;
+  try {
+    // text/plain + no-cors = a "simple" request Apps Script accepts from github.io; a network failure rejects and keeps the queue
+    await fetch(LOG_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ k: LOG_KEY, events: q }) });
+    const now = readQ(); set(K_Q, JSON.stringify(now.slice(q.length)));
+  } catch (e) { /* offline: keep queued, retry later */ }
+  finally { flushing = false; if (readQ().length && navigator.onLine) setTimeout(flush, 800); }
+}
+addEventListener('online', flush);
+setInterval(flush, 60000);
+addEventListener('pagehide', () => {
+  const q = readQ();
+  if (q.length && /^https:\/\//.test(LOG_URL) && navigator.sendBeacon) {
+    if (navigator.sendBeacon(LOG_URL, new Blob([JSON.stringify({ k: LOG_KEY, events: q })], { type: 'text/plain' }))) set(K_Q, '[]');
+  }
+});
+window.NextStopTrack = track;
+
+const gate = $('#nsGate');
+function needCheckIn() { const t = me(); return !(t && t.name && t.email); }
+function openGate() {
+  gate.hidden = false; document.body.classList.add('ns-touring');
+  const t = me() || {}; $('#nsGName').value = t.name || ''; $('#nsGMail').value = t.email || '';
+  setTimeout(() => $('#nsGName').focus(), 50);
+}
+$('#nsGateF').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#nsGName').value.trim(), email = $('#nsGMail').value.trim().toLowerCase(), err = $('#nsGErr');
+  err.hidden = true;
+  if (name.length < 2) { err.textContent = 'Please enter your name.'; err.hidden = false; $('#nsGName').focus(); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; $('#nsGMail').focus(); return; }
+  const old = me();
+  const tid = old && old.email === email ? old.tid : 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  set(K_ME, JSON.stringify({ tid, name, email, since: new Date().toISOString() }));
+  gate.hidden = true; document.body.classList.remove('ns-touring');
+  track('signin', 'first check-in on this device');
+  track('visit', location.href);
+  renderWho();
+  startGuide();
+});
+
+/* ---------- error capture (goes into bug reports) ---------- */
+const ERRS = [];
+const keep = m => { ERRS.push(new Date().toISOString().slice(11, 19) + ' ' + String(m).slice(0, 300)); if (ERRS.length > 8) ERRS.shift(); };
+window.addEventListener('error', e => keep((e.message || 'error') + (e.filename ? ' @' + e.filename.split('/').pop() + ':' + e.lineno : '')));
+window.addEventListener('unhandledrejection', e => keep('promise: ' + (e.reason && (e.reason.message || e.reason))));
+
+/* ---------- Report a problem -> prefilled GitHub issue ---------- */
+function where() {
+  if (document.querySelector('dialog[open]')) return 'dialog: ' + document.querySelector('dialog[open]').id;
+  return $('#journey') && !$('#journey').hidden ? 'flight page' : 'departures board';
+}
+$('#nsFb').addEventListener('click', () => {
+  const env = [
+    '- Build: ' + VERSION,
+    '- Screen: ' + where(),
+    '- Viewport: ' + innerWidth + '×' + innerHeight + ' @' + (devicePixelRatio || 1) + 'x',
+    '- Browser: ' + navigator.userAgent,
+    '- Flights on board: ' + flightsCount(),
+    '- Time: ' + new Date().toString(),
+    '- Recent errors:' + (ERRS.length ? '\n```\n' + ERRS.join('\n') + '\n```' : ' none'),
+  ].join('\n');
+  const body = '### What happened?\n\n\n### Steps to reproduce\n1. \n2. \n3. \n\n### What did you expect?\n\n\n### Screenshot (drag it here)\n\n\n---\n<details><summary>Device info (added automatically)</summary>\n\n' + env + '\n</details>\n';
+  const url = REPO + '/issues/new?labels=tester-feedback&title=' + encodeURIComponent('[' + where() + '] ') + '&body=' + encodeURIComponent(body);
+  track('report_problem', where());
+  window.open(url, '_blank', 'noopener');
+});
+
+/* ---------- First-use guided tour ---------- */
+const STEPS = [
+  { t: null, k: 'Welcome aboard', h: 'Next Stop turns your to-dos into flights', p: 'This quick guide shows where everything goes. It takes about 30 seconds. You can skip any step, or skip the whole guide and explore on your own.', start: true },
+  { t: '#bookBtn', k: 'Step', req: true, h: 'Add a task here', p: 'Every task is a “flight”. Tap <b>Book a flight</b>, give it a name, and that’s enough. Everything else in the form is optional.' },
+  { t: '#filters', k: 'Lines', h: 'Areas of your life', p: 'Gym, Work, Learn, Home, Personal. Each flight belongs to one line. Tap a colour to show only that line, or ignore this.' },
+  { t: '#board', k: 'Departures board', h: 'Your flights, sorted by departure', p: 'Each row shows time, destination, stops and status (ON TIME, CLOSING, DELAYED). <b>Tap a row</b> to open the flight and tear its tickets as you finish each step.' },
+  { t: '.stats', k: 'Progress', h: 'Fills itself in', p: 'Tickets torn today, your streak and miles earned. There’s nothing to enter here.' },
+  { t: '#settingsBtn', k: 'Settings', h: 'Personalise or back up', p: 'Add your name for the boarding pass, switch sounds or lettering, download a backup, or replay this guide. You can skip all of it.' },
+  { t: null, k: 'Testing', h: 'Found something broken?', p: 'Tap <b>Report a problem</b> (bottom-left corner). It opens a GitHub issue with your device details already filled in. Just say what happened.' },
+  { t: null, k: 'Ready', h: 'Book your first flight?', p: 'Your tasks stay in this browser only. While booking, tap <b>How to fill this</b> for a field-by-field guide.', end: true },
+];
+let si = 0;
+const tour = $('#nsTour'), hole = $('#nsHole'), bub = $('#nsBub');
+function place() {
+  const s = STEPS[si], el = s.t && $(s.t);
+  const vw = innerWidth, vh = innerHeight, bw = Math.min(360, vw - 24);
+  if (!el || !el.getClientRects().length) {
+    hole.style.cssText = 'left:50%;top:50%;width:0;height:0';
+    bub.style.left = (vw - bw) / 2 + 'px'; bub.style.top = Math.max(12, vh / 2 - bub.offsetHeight / 2) + 'px'; return;
+  }
+  const r = el.getBoundingClientRect(), pad = 6;
+  hole.style.cssText = 'left:' + (r.left - pad) + 'px;top:' + (r.top - pad) + 'px;width:' + (r.width + pad * 2) + 'px;height:' + (r.height + pad * 2) + 'px';
+  const bh = bub.offsetHeight;
+  let top = r.bottom + 14;
+  if (top + bh > vh - 10) top = r.top - bh - 14;
+  if (top < 10) top = Math.min(vh - bh - 10, Math.max(10, r.top + 10));
+  bub.style.top = top + 'px';
+  bub.style.left = Math.min(vw - bw - 12, Math.max(12, r.left + r.width / 2 - bw / 2)) + 'px';
+}
+function show(i) {
+  si = i; const s = STEPS[i], n = STEPS.length - 2;
+  const tag = s.req ? '<i>Start here</i>' : s.start || s.end ? '' : '<i class="opt">Optional</i>';
+  const dots = s.start || s.end ? '' : '<span class="ns-dots">' + STEPS.slice(1, -1).map((_, j) => '<b class="' + (j === i - 1 ? 'on' : '') + '"></b>').join('') + '</span>';
+  const btns = s.start ? '<button class="ns-b p" data-a="next">Show me</button><button class="ns-b g" data-a="skip">Skip the guide</button>'
+    : s.end ? '<button class="ns-b p" data-a="book">Book a flight</button><button class="ns-b g" data-a="done">Later</button>'
+    : '<button class="ns-b p" data-a="next">' + (i === n ? 'Finish' : 'Next') + '</button><button class="ns-b g" data-a="back">Back</button><span class="sp"></span><button class="ns-b t" data-a="skip">Skip guide</button>';
+  bub.innerHTML = '<div class="k"><span>' + s.k + (s.start || s.end ? '' : ' · ' + i + '/' + n) + '</span>' + tag + '</div><h3>' + s.h + '</h3><p>' + s.p + '</p><div class="ns-row">' + btns + (dots ? '<span class="sp"></span>' + dots : '') + '</div>';
+  const el = s.t && $(s.t);
+  if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'instant' in document.documentElement.style ? 'instant' : 'auto' });
+  requestAnimationFrame(() => requestAnimationFrame(place));
+  const f = bub.querySelector('.ns-b.p'); if (f) f.focus({ preventScroll: true });
+}
+function openTour() {
+  if (document.querySelector('dialog[open]')) document.querySelectorAll('dialog[open]').forEach(d => d.close());
+  if ($('#journey') && !$('#journey').hidden && $('#homeLink')) $('#homeLink').click();
+  tour.hidden = false; document.body.classList.add('ns-touring'); show(0);
+}
+function closeTour() { tour.hidden = true; document.body.classList.remove('ns-touring'); set(K_TOUR, '1'); }
+bub.addEventListener('click', e => {
+  const a = e.target.closest('[data-a]'); if (!a) return;
+  const act = a.dataset.a;
+  if (act === 'next') show(Math.min(si + 1, STEPS.length - 1));
+  else if (act === 'back') show(Math.max(1, si - 1));
+  else if (act === 'skip' || act === 'done') closeTour();
+  else if (act === 'book') { closeTour(); set(K_TIPS, ''); setTimeout(() => $('#bookBtn').click(), 60); }
+});
+document.addEventListener('keydown', e => { if (!tour.hidden && e.key === 'Escape') closeTour(); }, true);
+addEventListener('resize', () => { if (!tour.hidden) place(); });
+addEventListener('scroll', () => { if (!tour.hidden) place(); }, { passive: true });
+window.NextStopTour = openTour;
+
+/* ---------- First-use tips inside "Book a flight" ---------- */
+const HINTS = [
+  ['#f-name', 'req', 'Required', 'Name the task: “Leg day”, “Ship landing page”, “Call the bank”. This is the only thing you must fill.'],
+  ['#f-lines', 'opt', 'Optional', 'Pick the area it belongs to. Choosing <b>Work</b> adds a 3-line Task box (Done when / Next step / Stopped at). Fill it in or skip it.'],
+  ['#f-done', 'req', 'Work only', 'Work tasks need one rough line: what does “done” look like? Other lines don’t need this.'],
+  ['#f-when', 'opt', 'Optional', 'Give it a deadline to get a “Last call” reminder, or leave it at <b>No deadline</b>.'],
+  ['#f-express', 'opt', 'Optional', 'Express flights jump to the top of the board.'],
+  ['#f-stops', 'opt', 'Optional', 'Break it into steps. Each step becomes a ticket you tear when it’s done. Tap a Route to fill them in one go, or leave it empty for a one-step task.'],
+  ['#f-hyp', 'opt', 'Optional', 'Your next move as a guess you can test (“X is the cause → test X”), plus what you do if yes and if no.'],
+  ['#f-stopped', 'opt', 'Optional', 'Fill this in when you get interrupted, so you know exactly where to pick up next time.'],
+  ['#f-perstop', 'opt', 'Optional', 'For big jobs with a far deadline: give each stop its own date, or tap <b>Spread dates evenly</b>.'],
+  ['#f-submit', 'go', 'Last step', '<b>Print tickets</b> saves the flight and opens it. <b>Save as route</b> stores these stops as a reusable template.'],
+];
+const GUIDE = [
+  ['Where to?', 'req', 'Name the task. This is the only field you must fill.'],
+  ['Line', 'opt', 'Gym, Work, Learn, Home or Personal. It sets the colour and the filter on the board. Work also opens a 3-line Task box: <b>Done when</b> (required for Work), Next step, Stopped at.'],
+  ['Departs', 'opt', 'When it should be done. Pick a quick chip or <b>Pick a time</b>. You get a “Last call” before it. Leave <b>No deadline</b> if there isn’t one.'],
+  ['Express flight', 'opt', 'Pins it to the top of the board.'],
+  ['Stops', 'opt', 'The steps. Type one per box (press Enter for the next) or paste a list. Tap a <b>Route</b> chip to load a ready-made list. Each stop becomes a ticket you tear.'],
+  ['Each stop its own date', 'opt', 'For long jobs: every ticket gets its own due date. <b>Spread dates evenly</b> fills them up to the deadline.'],
+  ['Print tickets', 'req', 'Saves the flight and opens it. Then tear each ticket by pulling the stub right (or press and hold) as you finish it.'],
+];
+function guideHTML() {
+  return '<div class="ns-guide" id="nsGuideBox"><ol>' + GUIDE.map(([t, c, d]) => '<li><span><span class="gt">' + t + '<i class="' + (c === 'opt' ? 'opt' : '') + '">' + (c === 'opt' ? 'Optional' : 'Required') + '</i></span>' + d + '</span></li>').join('') + '</ol></div>';
+}
+function addHelpBtn() {
+  const head = $('#book .dlg-head'); if (!head || head.querySelector('.ns-help-btn')) return;
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'ns-help-btn'; b.innerHTML = '?<span class="l"> How to fill this</span>'; b.setAttribute('aria-label', 'How to fill this form'); b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('click', () => {
+    const body = $('#book .dlg-body'), box = $('#nsGuideBox');
+    if (box) { box.remove(); b.setAttribute('aria-pressed', 'false'); return; }
+    body.insertAdjacentHTML('afterbegin', guideHTML()); body.scrollTop = 0; b.setAttribute('aria-pressed', 'true');
+    track('booking_guide_opened', '');
+  });
+  head.querySelector('[data-close]').before(b);
+}
+function addTips() {
+  const dlg = $('#book');
+  if (!dlg || get(K_TIPS) === '1' || dlg.querySelector('.ns-tipbar')) return;
+  if (!/book/i.test(($('#book-title') || {}).textContent || '')) return;
+  const body = dlg.querySelector('.dlg-body');
+  const bar = document.createElement('div');
+  bar.className = 'ns-tipbar';
+  bar.innerHTML = '<span><b>First flight?</b> Only “Where to?” is required. Everything marked Optional you can skip, and you can change it later. Tap <b>?</b> / <b>How to fill this</b> (top) any time for the full guide.</span><button type="button">Hide tips</button>';
+  bar.querySelector('button').addEventListener('click', () => { set(K_TIPS, '1'); removeTips(); });
+  body.prepend(bar);
+  HINTS.forEach(([sel, cls, tag, txt]) => {
+    const el = $(sel); if (!el) return;
+    if (sel === '#f-submit') { bar.querySelector('span').insertAdjacentHTML('beforeend', ' ' + txt); return; }
+    const host = el.closest('.switch, .fld, fieldset') || el;
+    const h = document.createElement('div');
+    h.className = 'ns-hint'; h.innerHTML = '<i class="' + cls + '">' + tag + '</i><span>' + txt + '</span>';
+    host.after(h);
+  });
+}
+function removeTips() { document.querySelectorAll('#book .ns-tipbar, #book .ns-hint').forEach(n => n.remove()); }
+const book = $('#book');
+if (book) {
+  let before = 0;
+  new MutationObserver(() => {
+    if (book.open) { before = flightsCount(); addHelpBtn(); addTips(); }
+  }).observe(book, { attributes: true, attributeFilter: ['open'] });
+  book.addEventListener('close', () => setTimeout(() => {
+    const n = flightsCount();
+    if (n > before) track('flight_booked', 'flights on board: ' + n);
+    if (n > 0) { set(K_TIPS, '1'); removeTips(); }
+    const g = $('#nsGuideBox'); if (g) g.remove();
+    const hb = $('#book .ns-help-btn'); if (hb) hb.setAttribute('aria-pressed', 'false');
+  }, 700));
+}
+// departed flights
+let departed = (() => { try { return JSON.parse(get(LS) || '{}').flights.filter(f => f.departedAt).length; } catch (e) { return 0; } })();
+setInterval(() => {
+  let n = 0; try { n = JSON.parse(get(LS) || '{}').flights.filter(f => f.departedAt).length; } catch (e) { return; }
+  if (n > departed) track('flight_departed', 'departed total: ' + n);
+  departed = n;
+}, 3000);
+if (false) {
+}
+
+/* ---------- Settings: backup / restore / guide / reset ---------- */
+const sw = $('#s-samples-w');
+if (sw) {
+  const f = document.createElement('div');
+  f.className = 'fld';
+  f.innerHTML = '<span class="lbl">Checked in as</span><div class="ns-who"><b id="nsWho"></b><button type="button" class="btn ghost sm" id="nsSwitch">Not you? Check in again</button></div>' +
+    '<span class="lbl" style="margin-top:14px">Test build tools</span><div class="ns-acts">' +
+    '<button type="button" class="btn ghost sm" id="nsBackup">Download backup</button>' +
+    '<button type="button" class="btn ghost sm" id="nsRestore">Restore backup</button>' +
+    '<button type="button" class="btn ghost sm" id="nsGuide">Show the guide again</button>' +
+    '<button type="button" class="btn danger sm" id="nsReset">Erase everything</button>' +
+    '<input type="file" id="nsFile" accept="application/json,.json" hidden></div>';
+  sw.after(f);
+  $('#nsBackup').addEventListener('click', () => {
+    const blob = new Blob([get(LS) || '{"v":1,"flights":[]}'], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'next-stop-backup-' + new Date().toISOString().slice(0, 10) + '.json'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+  $('#nsRestore').addEventListener('click', () => $('#nsFile').click());
+  $('#nsFile').addEventListener('change', async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      const d = JSON.parse(await file.text());
+      if (!d || !Array.isArray(d.flights)) throw new Error('not a Next Stop backup');
+      if (!confirm('Replace the flights on this device with ' + d.flights.length + ' flight(s) from the backup?')) return;
+      set(LS, JSON.stringify(d)); location.reload();
+    } catch (err) { alert('Could not restore: ' + err.message); }
+  });
+  $('#nsGuide').addEventListener('click', () => { set(K_TIPS, ''); openTour(); });
+  $('#nsSwitch').addEventListener('click', () => { const d = $('#settings'); if (d && d.open) d.close(); set(K_ME, ''); openGate(); });
+  $('#nsReset').addEventListener('click', () => {
+    if (!confirm('Erase all flights, settings and guide progress on this device? This cannot be undone.')) return;
+    try { Object.keys(localStorage).filter(k => k.startsWith('next-stop:') && k !== K_ME && k !== K_Q).forEach(k => localStorage.removeItem(k)); } catch (e) { /* ignore */ }
+    location.reload();
+  });
+}
+
+function renderWho() { const t = me(), w = $('#nsWho'); if (w) w.textContent = t ? t.name + ' · ' + t.email : 'Not checked in'; }
+renderWho();
+const st = $('#settingsBtn'); if (st) st.addEventListener('click', renderWho);
+
+/* ---------- start: check-in first, then the guide on the very first visit ---------- */
+if (needCheckIn()) openGate();
+else { track('visit', location.href); startGuide(); }
+function startGuide() {
+  if (get(K_TOUR) === '1') return;
+  let tries = 0;
+  const wait = setInterval(() => {
+    tries++;
+    const ready = $('#bookBtn') && $('#board') && $('#board').getBoundingClientRect().height > 40 && !document.querySelector('dialog[open]');
+    if (ready || tries > 40) { clearInterval(wait); if (ready) openTour(); }
+  }, 150);
+}
+flush();
+})();
+</script>

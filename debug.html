@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debug Plan · Next Stop</title>
+<style>
+:root{--bg:#0f0f10;--card:#1a1a1c;--field:#232326;--ink:#ece8de;--soft:#9d988c;--rule:#333236;--amber:#f6c64b;--red:#f04b3d;--go:#4ccb8c;--blue:#5b8fd6;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#000;border-bottom:4px solid var(--red);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{margin:0;font-size:21px;letter-spacing:-.01em}
+header h1 span{color:var(--amber)}
+header .sp{flex:1}
+a.back{color:var(--soft);text-decoration:none;font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.btn{border:0;border-radius:8px;padding:9px 13px;font:800 12px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:var(--field);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--rule)}
+.btn:hover{box-shadow:inset 0 0 0 1.5px var(--soft)}
+.btn.pri{background:var(--red);color:#fff;box-shadow:none}
+.btn.sm{padding:7px 9px;font-size:11px}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;padding:18px 20px 60px;max-width:1500px;margin:0 auto}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px}
+h2{margin:0 0 12px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+.rule{font-size:13px;color:var(--soft);margin:0 0 14px;padding:10px 12px;border:1.5px dashed var(--rule);border-radius:8px}
+.rule b{color:var(--ink)}
+label{display:block;margin:0 0 12px}
+label>span{display:block;font:800 11px/1.2 system-ui;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:5px}
+label>span small{text-transform:none;letter-spacing:0;font-weight:500;color:#bdb8ab;font-size:12px}
+input,textarea,select{width:100%;background:var(--field);color:var(--ink);border:1.5px solid var(--rule);border-radius:8px;padding:9px 10px;font:inherit}
+textarea{min-height:40px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.step{border:1.5px solid var(--rule);border-left:5px solid var(--blue);border-radius:10px;padding:12px;margin:0 0 12px;background:#161618}
+.step-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.step-h b{font-size:14px;color:var(--blue);flex:1}
+.yes{border-left:3px solid var(--go)!important}
+.no{border-left:3px solid var(--red)!important}
+.sec{margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}
+.checks{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:6px}
+.checks li{font-size:13.5px;padding:8px 10px;border-radius:8px;background:#22201a;border-left:4px solid var(--amber)}
+.checks li.ok{background:#16231c;border-left-color:var(--go)}
+.checks li.bad{background:#2a1716;border-left-color:var(--red)}
+pre{white-space:pre;overflow-x:auto;background:#0a0a0a;border:1px solid var(--rule);border-radius:10px;padding:14px;font:13px/1.5 ui-monospace,Consolas,monospace;color:#e9e4d6;margin:0}
+.flow .pair{display:inline-flex;gap:6px;align-items:center}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;align-items:center}
+.flow .n{padding:6px 10px;border-radius:999px;background:var(--field);font-size:12px;font-weight:700;border:1.5px solid var(--rule)}
+.flow .n.esc{border-color:var(--red);color:var(--red)}
+.flow .n.done{border-color:var(--go);color:var(--go)}
+.flow i{color:var(--soft);font-style:normal}
+.right{position:sticky;top:12px;align-self:start}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#000;color:var(--amber);border:1px solid var(--rule);padding:10px 16px;border-radius:10px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media print{
+  pre{white-space:pre-wrap!important}
+  header,.left,.noprint,.checks{display:none!important}
+  body{background:#fff;color:#000}
+  main{display:block;padding:0}
+  .card{border:0;background:#fff;padding:0}
+  pre{background:#fff;color:#000;border:0;font-size:12px}
+  .right{position:static}
+  .flow .n{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="/">← Next Stop</a>
+  <h1>Debug <span>Plan</span></h1>
+  <span class="sp"></span>
+  <button class="btn" id="example">Load example</button>
+  <button class="btn" id="clear">New blank</button>
+  <button class="btn" id="dl">Save .md</button>
+  <button class="btn" id="copy">Copy text</button>
+  <button class="btn pri" id="print">Print</button>
+</header>
+<main>
+  <section class="card left">
+    <p class="rule"><b>One hypothesis → one test → one saved output → one decision.</b> Cheapest checks first. Every step needs an If YES and an If NO.</p>
+    <h2>Frame the problem</h2>
+    <label><span>Task <small>[Customer/System] [Ticket] – one-line outcome</small></span><input data-k="task" placeholder="ACME SUP-1234 – export runs via App-manager"></label>
+    <label><span>Problem <small>what fails · where · since when · how to reproduce</small></span><textarea data-k="problem"></textarea></label>
+    <label><span>Why <small>who is blocked / what's at stake</small></span><input data-k="why"></label>
+    <div class="row">
+      <label style="grid-column:span 2"><span>Suspected fix <small>if you already think you know it</small></span><input data-k="fix" placeholder="e.g. Set GTA -1"></label>
+      <label><span>Confidence</span><select data-k="conf"><option value="">—</option><option>low</option><option>medium</option><option>high</option></select></label>
+    </div>
+    <div class="noprint" style="margin:-4px 0 12px"><button class="btn sm" id="fixStep">Test suspected fix as Step 1</button></div>
+    <label><span>Done when <small>verified working + root cause in Jira + reply sent</small></span><textarea data-k="done"></textarea></label>
+    <div class="row">
+      <label><span>Total timebox (h)</span><input data-k="total" type="number" min="0" step="0.25"></label>
+      <label><span>Deadline</span><input data-k="deadline" placeholder="Mon 11:00"></label>
+      <label><span>Escalate to</span><input data-k="escTo" placeholder="dev team"></label>
+      <label><span>Escalate if not isolated by</span><input data-k="escBy" placeholder="end of Step 3"></label>
+    </div>
+    <label><span>Evidence folder / link</span><input data-k="evidence" placeholder="OneDrive/Tickets/SD-1234"></label>
+
+    <div class="sec">
+      <h2>Hypothesis steps</h2>
+      <div id="steps"></div>
+      <button class="btn" id="addStep">+ Add step</button>
+      <button class="btn" id="sortStep" title="Order by timebox, cheapest first">Sort cheapest first</button>
+    </div>
+
+    <div class="sec">
+      <h2>Start &amp; resume</h2>
+      <label><span>First action <small>≤10 min, physical, do it now</small></span><input data-k="first"></label>
+      <div class="row">
+        <label><span>Status: where I stopped</span><input data-k="stStop"></label>
+        <label><span>Next action</span><input data-k="stNext"></label>
+        <label><span>When</span><input data-k="stWhen"></label>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>Close-out <small style="color:var(--soft);text-transform:none;letter-spacing:0">(fill when solved)</small></h2>
+      <label><span>Root cause</span><input data-k="rc"></label>
+      <label><span>Fix / workaround</span><input data-k="fixDone"></label>
+      <label><span>Prevent recurrence</span><input data-k="prevent"></label>
+      <div class="row">
+        <label><span>Jira comment posted</span><select data-k="jira"><option value="">no</option><option>yes</option></select></label>
+        <label><span>Customer reply sent</span><select data-k="reply"><option value="">no</option><option>yes</option></select></label>
+      </div>
+    </div>
+  </section>
+
+  <section class="card right">
+    <h2>Plan check</h2>
+    <ul class="checks" id="checks"></ul>
+    <h2>Decision flow</h2>
+    <div class="flow" id="flow"></div>
+    <h2>Plan (copy into Jira / notes)</h2>
+    <pre id="out"></pre>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+const KEY = 'next-stop:debug-plan:v1';
+const $ = s => document.querySelector(s);
+const blankStep = () => ({ hyp: '', test: '', mins: '', output: '', yes: '', no: '' });
+const blank = () => ({ task:'',problem:'',why:'',fix:'',conf:'',done:'',total:'',deadline:'',escTo:'',escBy:'',evidence:'',first:'',stStop:'',stNext:'',stWhen:'',rc:'',fixDone:'',prevent:'',jira:'',reply:'', steps:[blankStep()] });
+const EXAMPLE = {
+  task:'ACME – CSV export fails when triggered by the scheduler; find cause and fix',
+  problem:'Script works from the front end but fails when run through the App-manager backend.',
+  why:'ACME is blocked on their monthly report; ticket waiting on us.',
+  fix:'Set GTA -1', conf:'medium',
+  done:'Export runs via the scheduler + root cause written in the ticket + ACME has a reply with fix/workaround.',
+  total:'3', deadline:'', escTo:'dev team', escBy:'GTA test (if still unexplained)', evidence:'Ticket folder',
+  steps:[
+    {hyp:'The script is fine; the execution path is the problem',test:'Run the front-end script directly from the backend',mins:'30',output:'Pass/fail + backend log in ticket folder',yes:'Problem is how App-manager triggers it → next step',no:'Compare script vs backend env (paths, env vars, permissions)'},
+    {hyp:'Timing mismatch between App-manager and setup',test:'Run `date` on App-manager host and test machine; compare time + TZ',mins:'20',output:'Both timestamps recorded',yes:'Sync via NTP, rerun — may be done',no:'Timing ruled out → next step'},
+    {hyp:'GTA setting causes it',test:'Set GTA -1, rerun via App-manager',mins:'30',output:'Pass/fail + log',yes:'Root cause found — document failing value and why',no:'GTA ruled out → next step'},
+    {hyp:'Specific to the customer's setup/version',test:'Run the same job on our in-house staging (same version) via the scheduler',mins:'60',output:'Pass/fail + log',yes:'Diff is their setup/version — list differences, ask the customer for their config',no:'Reproducible bug — escalate to dev with logs'}
+  ],
+  first:'Copy the front-end script to the backend machine and run it (Step 1)',
+  stStop:'',stNext:'',stWhen:'',rc:'',fixDone:'',prevent:'',jira:'',reply:''
+};
+let P;
+try { P = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { P = blank(); }
+if (!Array.isArray(P.steps) || !P.steps.length) P.steps = [blankStep()];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),1600); }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(P)); }catch(e){} }
+
+function fillFields(){ document.querySelectorAll('[data-k]').forEach(el => { el.value = P[el.dataset.k] || ''; }); }
+function renderSteps(){
+  $('#steps').innerHTML = P.steps.map((s,i) => `
+  <div class="step" data-i="${i}">
+    <div class="step-h"><b>STEP ${i+1}</b>
+      <button class="btn sm" data-op="up" ${i?'':'disabled'}>↑</button>
+      <button class="btn sm" data-op="down" ${i<P.steps.length-1?'':'disabled'}>↓</button>
+      <button class="btn sm" data-op="del">✕</button></div>
+    <div class="row">
+      <label style="grid-column:span 3"><span>Hypothesis <small>"__ is the cause"</small></span><input data-s="hyp" value="${esc(s.hyp)}"></label>
+      <label><span>Timebox (min)</span><input data-s="mins" type="number" min="0" value="${esc(s.mins)}"></label>
+    </div>
+    <label><span>Test <small>exact action / command</small></span><input data-s="test" value="${esc(s.test)}"></label>
+    <label><span>Output <small>evidence saved where</small></span><input data-s="output" value="${esc(s.output)}"></label>
+    <div class="row">
+      <label><span style="color:var(--go)">If YES →</span><input class="yes" data-s="yes" value="${esc(s.yes)}"></label>
+      <label><span style="color:var(--red)">If NO →</span><input class="no" data-s="no" value="${esc(s.no)}"></label>
+    </div>
+  </div>`).join('');
+}
+
+function planText(){
+  const L = [], v = k => (P[k]||'').trim();
+  L.push('TASK:          ' + (v('task')||'__'));
+  L.push('PROBLEM:       ' + (v('problem')||'__'));
+  L.push('WHY:           ' + (v('why')||'__'));
+  if (v('fix')) L.push('SUSPECTED FIX: ' + v('fix') + (v('conf') ? ' (confidence: ' + v('conf') + ')' : ''));
+  L.push('DONE WHEN:     ' + (v('done')||'__'));
+  L.push('TIMEBOX:       ' + (v('total') ? v('total') + ' h total' : '__ h total') + ' | Deadline: ' + (v('deadline')||'__') + ' | Escalate to ' + (v('escTo')||'__') + ' if not isolated by: ' + (v('escBy')||'__'));
+  if (v('evidence')) L.push('EVIDENCE:      ' + v('evidence'));
+  P.steps.forEach((s,i) => {
+    L.push('');
+    L.push('STEP ' + (i+1) + ' – Hypothesis: "' + (s.hyp||'__').trim() + '"' + (s.mins ? '   (' + s.mins + ' min)' : ''));
+    L.push('  Test:    ' + (s.test||'__'));
+    L.push('  Output:  ' + (s.output||'__'));
+    L.push('  If YES → ' + (s.yes||'__'));
+    L.push('  If NO  → ' + (s.no||'__'));
+  });
+  L.push('');
+  L.push('FIRST ACTION:  ' + (v('first')||'__'));
+  L.push('STATUS:        ' + (v('stStop')||'[where I stopped]') + ' → ' + (v('stNext')||'[next action]') + ' → ' + (v('stWhen')||'[when]'));
+  if (v('rc')||v('fixDone')||v('prevent')||v('jira')||v('reply')) {
+    L.push('');
+    L.push('CLOSE-OUT');
+    L.push('  Root cause:  ' + (v('rc')||'__'));
+    L.push('  Fix:         ' + (v('fixDone')||'__'));
+    L.push('  Prevent:     ' + (v('prevent')||'__'));
+    L.push('  Jira comment: ' + (v('jira')||'no') + ' | Customer reply: ' + (v('reply')||'no'));
+  }
+  return L.join('\n');
+}
+
+function checks(){
+  const out = [], v = k => (P[k]||'').trim();
+  const add = (lvl, msg) => out.push([lvl, msg]);
+  if (!v('task')) add('bad','Task title is empty.');
+  else if (/\b(done|issue|working|status)\b/i.test(v('task')) && !/[–-]/.test(v('task'))) add('warn','Title reads like a status — state the outcome after a dash.');
+  if (!v('problem')) add('bad','Problem is empty — say what fails, where, since when.');
+  if (!v('done')) add('bad','"Done when" is empty.');
+  else if (!/jira|reply|repl|customer|comment|sent|share/i.test(v('done'))) add('warn','"Done when" should include what you send (Jira comment / customer reply).');
+  if (!v('escBy') && !v('escTo')) add('bad','No escalation point — you may loop forever.');
+  let sum = 0, prev = -1, unsorted = false;
+  P.steps.forEach((s,i) => {
+    const n = 'Step ' + (i+1);
+    if (!s.hyp.trim()) add('bad', n + ': hypothesis missing.');
+    if (!s.test.trim()) add('bad', n + ': no exact test.');
+    if (!s.output.trim()) add('warn', n + ': no saved evidence.');
+    if (!s.yes.trim() || !s.no.trim()) add('bad', n + ': needs both If YES and If NO (no dead ends).');
+    const m = parseFloat(s.mins);
+    if (!m) add('warn', n + ': no timebox.');
+    else { sum += m; if (m < prev) unsorted = true; prev = m; }
+  });
+  if (P.steps.some(s => /step\s*\d/i.test(s.yes + ' ' + s.no))) add('warn','A branch says "Step N" — numbers shift when you reorder. Prefer "next step".');
+  if (unsorted) add('warn','Steps are not cheapest-first. Fine if likelihood justifies it — otherwise press "Sort cheapest first".');
+  const tot = parseFloat(v('total')) * 60;
+  if (!tot) add('warn','Total timebox not set.');
+  else if (sum > tot) add('bad','Step timeboxes add up to ' + sum + ' min but total is ' + tot + ' min.');
+  if (v('fix') && !P.steps.some(s => s.hyp.toLowerCase().includes(v('fix').toLowerCase()) || s.test.toLowerCase().includes(v('fix').toLowerCase()))) add('warn','You have a suspected fix but no step tests it.');
+  if (!v('first')) add('bad','First action (Start & resume section) is empty — what can you do in the next 10 min?');
+  if (!out.length) add('ok','Plan is complete — start the first action. Total step time: ' + sum + ' min.');
+  return out;
+}
+
+function renderRight(){
+  $('#out').textContent = planText();
+  $('#checks').innerHTML = checks().map(([l,m]) => `<li class="${l}">${esc(m)}</li>`).join('');
+  const f = P.steps.map((s,i) => `<span class="pair">${i?'<i>— no →</i>':''}<span class="n" title="${esc(s.hyp)}">S${i+1}${s.mins?' · '+esc(s.mins)+'m':''}</span></span>`).join('');
+  $('#flow').innerHTML = f + '<span class="pair"><i>— no →</i><span class="n esc">Escalate' + (P.escTo ? ' · ' + esc(P.escTo) : '') + '</span></span><i style="flex-basis:100%;height:0"></i><i>any YES →</i><span class="n done">Fix · Jira · Reply</span>';
+}
+function refresh(){ save(); renderRight(); }
+
+document.addEventListener('input', e => {
+  const k = e.target.dataset.k, s = e.target.dataset.s;
+  if (k) { P[k] = e.target.value; refresh(); }
+  else if (s) { const i = +e.target.closest('.step').dataset.i; P.steps[i][s] = e.target.value; refresh(); }
+});
+document.addEventListener('change', e => { if (e.target.tagName === 'SELECT' && e.target.dataset.k) { P[e.target.dataset.k] = e.target.value; refresh(); } });
+$('#steps').addEventListener('click', e => {
+  const b = e.target.closest('[data-op]'); if (!b) return;
+  const i = +b.closest('.step').dataset.i, st = P.steps;
+  if (b.dataset.op === 'up' && i) [st[i-1], st[i]] = [st[i], st[i-1]];
+  if (b.dataset.op === 'down' && i < st.length-1) [st[i+1], st[i]] = [st[i], st[i+1]];
+  if (b.dataset.op === 'del') { st.splice(i,1); if (!st.length) st.push(blankStep()); }
+  renderSteps(); refresh();
+});
+$('#addStep').onclick = () => { P.steps.push(blankStep()); renderSteps(); refresh(); const ins = document.querySelectorAll('#steps .step:last-child input'); if (ins[0]) ins[0].focus(); };
+$('#sortStep').onclick = () => { P.steps.sort((a,b) => (parseFloat(a.mins)||1e9) - (parseFloat(b.mins)||1e9)); renderSteps(); refresh(); toast('Sorted cheapest first'); };
+$('#fixStep').onclick = () => {
+  if (!P.fix.trim()) { toast('Write the suspected fix first'); return; }
+  const s = { hyp: P.fix.trim() + ' resolves it', test: 'Apply "' + P.fix.trim() + '" in a controlled way and rerun the failing case', mins: '20', output: 'Before/after pass-fail + log', yes: 'Confirm root cause, document, go to close-out', no: 'Revert the change → next hypothesis' };
+  if (P.steps.length === 1 && !P.steps[0].hyp && !P.steps[0].test) P.steps = [s]; else P.steps.unshift(s);
+  renderSteps(); refresh(); toast('Added as Step 1');
+};
+$('#example').onclick = () => { if (JSON.stringify(P) !== JSON.stringify(blank()) && !confirm('Replace the current plan with the example?')) return; P = JSON.parse(JSON.stringify(EXAMPLE)); fillFields(); renderSteps(); refresh(); };
+$('#clear').onclick = () => { if (!confirm('Start a new blank plan? The current one will be cleared (save .md first if you need it).')) return; P = blank(); fillFields(); renderSteps(); refresh(); };
+$('#copy').onclick = async () => { try { await navigator.clipboard.writeText(planText()); toast('Copied'); } catch (e) { const r = document.createRange(); r.selectNodeContents($('#out')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Selected — press Ctrl+C'); } };
+$('#print').onclick = () => print();
+$('#dl').onclick = () => {
+  const name = (P.task || 'debug-plan').replace(/[^\w\- ]+/g,'').trim().slice(0,60).replace(/\s+/g,'-') || 'debug-plan';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['```\n' + planText() + '\n```\n'], { type: 'text/markdown' }));
+  a.download = name + '.md'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+fillFields(); renderSteps(); renderRight();
+})();
+</script>
+</body>
+</html>

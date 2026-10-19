@@ -1,0 +1,9 @@
+data/
+backups/
+*.log
+__pycache__/
+*.db
+*.db-*
+.env
+pages/log_url.txt
+*.before-*

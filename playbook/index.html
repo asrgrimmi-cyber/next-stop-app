@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Next Stop · Brand Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Alfa+Slab+One&family=Doto:wght,ROND@100..900,0..100&display=swap">
+<style>
+:root{--red:#E03A2D;--ink:#17161A;--amber:#F6C64B;--floor:#E5E0D4;--surface:#F7F4ED;--paper:#FBF8F0;--sign:#111113;--board:#151515;--soft:#5D5950;--go:#4CCB8C;--late:#FF6E60;--on:#F3F0E8;
+--dot:"Doto","Courier New",monospace;--sans:"Archivo","Helvetica Neue",Arial,sans-serif;--slab:"Alfa Slab One",Rockwell,Georgia,serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--floor);background-image:radial-gradient(rgba(40,36,30,.15) 1.1px,transparent 1.6px);background-size:16px 16px;color:var(--ink);font:400 15px/1.5 var(--sans)}
+.top{background:var(--sign);color:var(--on)}
+.top .in{max-width:1200px;margin:0 auto;padding:14px clamp(16px,4vw,32px);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{width:34px;height:34px;border-radius:50%;background:var(--red);display:grid;place-items:center}
+.logo svg{width:20px;height:20px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.wm{font:800 21px/1 var(--sans);font-stretch:86%}
+.wm small{font:800 13px/1 var(--dot);font-variation-settings:"ROND" 100;color:var(--amber);letter-spacing:.1em;margin-left:10px}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:8px;padding:11px 15px;font:800 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.btn.p{background:var(--red);color:#fff}.btn.g{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+.stripes{display:flex;height:5px}.stripes i{flex:1}
+main{max-width:1200px;margin:0 auto;padding:10px clamp(16px,4vw,32px) 80px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+nav.toc a{font:800 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:9px 12px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(23,22,26,.25)}
+h1{font:800 clamp(36px,6vw,64px)/.98 var(--sans);font-stretch:86%;letter-spacing:-.02em;margin:26px 0 10px;max-width:18ch}
+h1 em{font-style:normal;color:var(--red)}
+.lede{max-width:62ch;color:var(--soft);font-size:17px}
+section{margin-top:46px;padding-top:12px;border-top:3px solid var(--ink)}
+h2{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font:800 13px/1.2 var(--sans);letter-spacing:.16em;text-transform:uppercase;margin:0 0 18px}
+h2 span{font:800 13px/1 var(--dot);font-variation-settings:"ROND" 100;color:var(--soft);letter-spacing:.06em}
+h3{font:800 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:22px 0 10px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))}
+.g2{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.sw{border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.sw .c{height:92px;display:flex;align-items:flex-end;padding:10px;font:800 13px/1 var(--dot);font-variation-settings:"ROND" 100;letter-spacing:.06em}
+.sw .t{padding:10px 12px 12px}.sw b{display:block;font:800 14px/1.2 var(--sans)}.sw code{font:600 12.5px/1.4 ui-monospace,Consolas,monospace;color:var(--soft)}
+.sw p{margin:4px 0 0;font-size:13px;color:var(--soft)}
+.type{background:var(--surface);border-radius:12px;padding:18px 20px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.type .s{font-size:12px;color:var(--soft);margin-top:8px;font-family:ui-monospace,Consolas,monospace}
+.sign{position:relative;background:var(--sign);color:var(--on);border-radius:14px;padding:26px 22px 20px}
+.sign::before{content:"";position:absolute;left:12px;right:12px;top:8px;height:2px;background:currentColor;opacity:.85}
+.boardt{font:800 clamp(30px,5vw,48px)/.95 var(--dot);font-variation-settings:"ROND" 100;color:var(--amber);text-transform:uppercase;letter-spacing:.02em;text-shadow:0 0 18px rgba(246,198,75,.35)}
+.tiles{display:flex;gap:2px;flex-wrap:wrap}
+.tile{position:relative;width:26px;height:37px;border-radius:3px;background:linear-gradient(180deg,#2A2A2A 0 50%,#202020 50%);display:grid;place-items:center;font:800 29px/1 var(--dot);font-variation-settings:"ROND" 100;color:var(--amber);text-shadow:0 0 9px rgba(246,198,75,.38)}
+.tile::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:rgba(0,0,0,.75)}
+.tiles.flap .tile{font:700 28px/1 var(--sans);font-stretch:75%;text-shadow:none}
+.tiles.go .tile{color:var(--go)}.tiles.late .tile{color:var(--late)}
+.panel{background:var(--board);background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.4px);background-size:5px 5px;border-radius:14px;padding:16px;display:grid;gap:12px}
+.pill{display:inline-block;font:800 12px/1 var(--dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;padding:7px 11px 6px;border-radius:999px;background:#000;border:1px solid rgba(255,255,255,.15)}
+.badge{width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font:800 15px/1 var(--sans)}
+.ticket{position:relative;display:grid;grid-template-columns:1fr 92px;max-width:430px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.22)) drop-shadow(0 10px 14px rgba(40,30,15,.17))}
+.ticket .b{background:#F2E2C0;color:#3A2E25;padding:0 16px 14px;border-radius:10px 0 0 10px;-webkit-mask:radial-gradient(circle at 100% 0,#0000 12px,#000 12.5px) top right/51% 51% no-repeat,radial-gradient(circle at 100% 100%,#0000 12px,#000 12.5px) bottom right/51% 51% no-repeat,linear-gradient(#000,#000) left/50% 100% no-repeat;mask:radial-gradient(circle at 100% 0,#0000 12px,#000 12.5px) top right/51% 51% no-repeat,radial-gradient(circle at 100% 100%,#0000 12px,#000 12.5px) bottom right/51% 51% no-repeat,linear-gradient(#000,#000) left/50% 100% no-repeat}
+.ticket .k{display:flex;justify-content:space-between;padding:11px 0 8px;border-bottom:2px solid #C9442A;margin-bottom:10px;font:400 15px/1 var(--slab);color:#C9442A;letter-spacing:.06em}
+.ticket .k span{font:800 12px/1 var(--dot);font-variation-settings:"ROND" 100;color:#3A2E25}
+.ticket h4{margin:0 0 12px;font:800 21px/1.05 var(--sans);font-stretch:82%;text-transform:uppercase}
+.ticket .s{background:#C9442A;color:#F8ECD2;border-radius:0 10px 10px 0;display:grid;place-items:center;font:800 24px/1 var(--sans);font-stretch:66%;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.06em;text-transform:uppercase}
+.stamp{display:inline-grid;justify-items:center;padding:6px 12px 5px;border:3px solid currentColor;border-radius:9px;font:400 26px/1 var(--slab);letter-spacing:.08em;text-transform:uppercase;transform:rotate(-9deg)}
+.stamp small{font:800 10px/1 var(--dot);font-variation-settings:"ROND" 100}
+.dd{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.dd ul{margin:0;padding:14px 18px 14px 34px;border-radius:12px;background:var(--surface);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.dd li{margin:6px 0}
+.dd .do{border-left:6px solid var(--go)}.dd .dont{border-left:6px solid var(--red)}
+.slides{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr))}
+.slide{aspect-ratio:16/9;border-radius:10px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 14px 30px -14px rgba(0,0,0,.4);container-type:inline-size}
+.slide .lbl{position:absolute;right:10px;bottom:8px;font:800 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+.sl-title{background:var(--sign);color:var(--on);padding:7cqw 7cqw}
+.sl-title .stp{position:absolute;left:0;right:0;top:0;display:flex;height:2.2cqw}.sl-title .stp i{flex:1}
+.sl-title .e{font:800 2.4cqw/1 var(--dot);font-variation-settings:"ROND" 100;color:var(--amber);letter-spacing:.12em}
+.sl-title h5{margin:2.4cqw 0 2cqw;font:800 7.4cqw/.95 var(--sans);font-stretch:86%;letter-spacing:-.02em}
+.sl-title h5 em{font-style:normal;color:var(--red)}
+.sl-title p{margin:0;font:600 2.4cqw/1.3 var(--sans);opacity:.7}
+.sl-board{background:var(--board);background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1.4px);background-size:1cqw 1cqw;color:var(--amber);padding:5cqw 5cqw}
+.sl-board .h{font:800 5cqw/1 var(--dot);font-variation-settings:"ROND" 100;margin-bottom:3cqw}
+.sl-board .r{display:grid;grid-template-columns:12cqw 1fr 17cqw;gap:2cqw;align-items:center;padding:1.6cqw 0;border-top:1px solid rgba(255,255,255,.08);font:800 2.9cqw/1 var(--dot);font-variation-settings:"ROND" 100}
+.sl-board .r .ok{color:var(--go)}.sl-board .r .lt{color:var(--late)}
+.sl-floor{background:var(--floor);background-image:radial-gradient(rgba(40,36,30,.15) 1px,transparent 1.5px);background-size:2.2cqw 2.2cqw;padding:5cqw 6cqw;color:var(--ink)}
+.sl-floor .e{font:800 2cqw/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--soft);border-top:.5cqw solid var(--ink);padding-top:1.4cqw;display:inline-block}
+.sl-floor h5{margin:2cqw 0 3cqw;font:800 5.4cqw/1 var(--sans);font-stretch:86%}
+.sl-floor .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:2.4cqw}
+.sl-floor .st{border-top:.6cqw solid var(--ink);padding-top:1.2cqw}
+.sl-floor .st b{display:block;font:900 8cqw/1 var(--dot);font-variation-settings:"ROND" 100}
+.sl-floor .st span{font:800 1.7cqw/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.sl-ticket{background:var(--floor);display:grid;place-items:center;padding:4cqw}
+.sl-ticket .tk{display:grid;grid-template-columns:1fr 14cqw;width:76cqw;filter:drop-shadow(0 1cqw 1.6cqw rgba(40,30,15,.2))}
+.sl-ticket .tk .b{background:#D6E3E7;color:#1C4766;padding:0 3cqw 2.6cqw;border-radius:1.6cqw 0 0 1.6cqw}
+.sl-ticket .tk .k{font:400 2.4cqw/1 var(--slab);padding:2.2cqw 0 1.6cqw;border-bottom:.4cqw solid #1C4766;margin-bottom:2cqw;display:flex;justify-content:space-between}
+.sl-ticket .tk h5{margin:0 0 2cqw;font:800 5.4cqw/1 var(--sans);font-stretch:82%;text-transform:uppercase}
+.sl-ticket .tk p{margin:0;font:600 2cqw/1.35 var(--sans)}
+.sl-ticket .tk .s{background:#1C4766;color:#E2ECEF;border-radius:0 1.6cqw 1.6cqw 0;writing-mode:vertical-rl;transform:rotate(180deg);display:grid;place-items:center;font:800 4cqw/1 var(--sans);font-stretch:66%;text-transform:uppercase;letter-spacing:.06em}
+.sl-close{background:var(--red);color:#fff;padding:7cqw;display:grid;align-content:center}
+.sl-close h5{margin:0;font:800 8cqw/.95 var(--sans);font-stretch:86%}
+.sl-close p{margin:2cqw 0 0;font:800 2.6cqw/1 var(--dot);font-variation-settings:"ROND" 100;letter-spacing:.1em}
+.voice{display:grid;gap:8px}
+.voice div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:10px 14px;border-radius:10px;background:var(--surface);box-shadow:0 0 0 1px rgba(0,0,0,.07)}
+.voice b{font:800 11px/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.voice span{font:800 15px/1.3 var(--dot);font-variation-settings:"ROND" 100;letter-spacing:.04em}
+@media (max-width:560px){.voice div{grid-template-columns:1fr}}
+.files a{color:var(--ink);font-weight:700}
+@media print{.top .btn,nav.toc{display:none}body{background:#fff}section{break-inside:avoid-page}.slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+  <span class="wm">Next Stop <small>BRAND PLAYBOOK</small></span><span class="sp"></span>
+  <a class="btn g" href="/">← App</a>
+  <a class="btn g" href="/playbook/Next-Stop-template.pptx" download>PowerPoint template</a>
+  <button class="btn p" onclick="print()">Print / PDF</button>
+</div></header>
+<div class="stripes"><i style="background:#3D9A5F"></i><i style="background:#2F64A8"></i><i style="background:#8455B8"></i><i style="background:#DA7A2C"></i><i style="background:#D4433A"></i></div>
+<main>
+  <nav class="toc"><a href="#idea">Idea</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#parts">Parts</a><a href="#slides">Slides</a><a href="#voice">Voice</a><a href="#rules">Rules</a><a href="#files">Files</a></nav>
+  <h1>Every task is a <em>flight</em>. Every slide is a station.</h1>
+  <p class="lede">Use this for any Next Stop presentation, demo, poster or share image. Same colours, same fonts, same words, so it always looks like the app.</p>
+
+  <section id="idea"><h2>The idea <span>01</span></h2>
+    <div class="grid">
+      <div class="sw"><div class="c" style="background:var(--sign);color:var(--amber)">FLIGHT</div><div class="t"><b>Flight = task</b><p>Has a line (category), a departure (deadline) and stops.</p></div></div>
+      <div class="sw"><div class="c" style="background:#F2E2C0;color:#C9442A;font-family:var(--slab)">ONE TRIP</div><div class="t"><b>Stop = ticket</b><p>A sub-step. You tear it when it is done.</p></div></div>
+      <div class="sw"><div class="c" style="background:var(--board);color:var(--go)">BOARDED</div><div class="t"><b>Boarding = starting</b><p>Chime, 5-4-3-2-1, focus timer. Stops procrastination.</p></div></div>
+      <div class="sw"><div class="c" style="background:var(--board);color:var(--late)">LAST CALL</div><div class="t"><b>Last call = nudge</b><p>15 minutes before a stop is due and you have not started.</p></div></div>
+      <div class="sw"><div class="c" style="background:var(--paper);color:var(--ink);font-family:var(--slab)">DEPARTED</div><div class="t"><b>Departing = done</b><p>Tear the boarding pass. Logged in the travel log.</p></div></div>
+    </div>
+  </section>
+
+  <section id="colour"><h2>Colour <span>02</span></h2>
+    <div class="grid">
+      <div class="sw"><div class="c" style="background:#E03A2D;color:#fff">SIGNAL</div><div class="t"><b>Signal red</b><code>#E03A2D</code><p>The one call to action per screen or slide.</p></div></div>
+      <div class="sw"><div class="c" style="background:#17161A;color:#F3F0E8">INK</div><div class="t"><b>Ink</b><code>#17161A</code><p>Text, rules, signs.</p></div></div>
+      <div class="sw"><div class="c" style="background:#151515;color:#F6C64B">AMBER</div><div class="t"><b>Board amber</b><code>#F6C64B</code><p>Only on dark boards: times, codes, LED text.</p></div></div>
+      <div class="sw"><div class="c" style="background:#E5E0D4;background-image:radial-gradient(rgba(40,36,30,.15) 1.1px,transparent 1.6px);background-size:12px 12px">FLOOR</div><div class="t"><b>Platform floor</b><code>#E5E0D4</code><p>Page and slide background, with dot grid.</p></div></div>
+      <div class="sw"><div class="c" style="background:#FBF8F0">PAPER</div><div class="t"><b>Paper</b><code>#FBF8F0</code><p>Tickets, boarding passes, cards.</p></div></div>
+      <div class="sw"><div class="c" style="background:#111;color:#4CCB8C">GO</div><div class="t"><b>Go green</b><code>#4CCB8C</code><p>Boarding, boarded, on time.</p></div></div>
+      <div class="sw"><div class="c" style="background:#111;color:#FF6E60">LATE</div><div class="t"><b>Late coral</b><code>#FF6E60</code><p>Last call, delayed, landed late.</p></div></div>
+    </div>
+    <h3>Lines (categories)</h3>
+    <div class="grid">
+      <div class="sw"><div class="c" style="background:#3D9A5F;color:#fff">G · GYM</div><div class="t"><code>#3D9A5F</code></div></div>
+      <div class="sw"><div class="c" style="background:#2F64A8;color:#fff">W · WORK</div><div class="t"><code>#2F64A8</code></div></div>
+      <div class="sw"><div class="c" style="background:#8455B8;color:#fff">L · LEARN</div><div class="t"><code>#8455B8</code></div></div>
+      <div class="sw"><div class="c" style="background:#DA7A2C;color:#111">H · HOME</div><div class="t"><code>#DA7A2C</code></div></div>
+      <div class="sw"><div class="c" style="background:#D4433A;color:#fff">P · PERSONAL</div><div class="t"><code>#D4433A</code></div></div>
+    </div>
+  </section>
+
+  <section id="type"><h2>Typography <span>03</span></h2>
+    <div class="g2">
+      <div class="type"><div style="font:800 46px/1 var(--sans);font-stretch:86%;letter-spacing:-.02em">Archivo Condensed</div><div class="s">Headlines & signs · 800 · width 86–92% · tracking −0.02em</div>
+        <div style="margin-top:14px;font:800 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)">Labels · 11px caps · +0.14em</div></div>
+      <div class="type" style="background:var(--board);color:var(--amber)"><div style="font:800 46px/1 var(--dot);font-variation-settings:'ROND' 100">DOTO 18:05</div><div class="s" style="color:rgba(246,198,75,.7)">Anything on a board: times, codes, statuses, numbers · ROND 100</div></div>
+      <div class="type"><div style="font:400 40px/1 var(--slab);letter-spacing:.06em;color:var(--red)">ALFA SLAB</div><div class="s">Stamps, airport codes, ticket kickers: ONE TRIP · USED · BOARDED</div></div>
+      <div class="type"><div style="font:400 17px/1.5 var(--sans)">Body copy is Archivo regular, 15–17px, line height 1.45. Short sentences. No exclamation marks.</div><div class="s">Fonts: Google Fonts (free). In PowerPoint use Archivo Condensed + Alfa Slab One; Doto falls back to Consolas.</div></div>
+    </div>
+  </section>
+
+  <section id="parts"><h2>Building blocks <span>04</span></h2>
+    <div class="g2">
+      <div class="sign"><div class="boardt">Departures</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><span class="badge" style="background:#3D9A5F">G</span><span class="badge" style="background:#2F64A8">W</span><span class="badge" style="background:#8455B8">L</span><span class="badge" style="background:#DA7A2C">H</span><span class="badge" style="background:#D4433A">P</span></div></div>
+      <div class="panel">
+        <div class="tiles"><span class="tile">1</span><span class="tile">8</span><span class="tile">:</span><span class="tile">0</span><span class="tile">5</span></div>
+        <div class="tiles flap"><span class="tile">S</span><span class="tile">H</span><span class="tile">I</span><span class="tile">P</span><span class="tile"> </span><span class="tile">I</span><span class="tile">T</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="color:var(--amber)">ON TIME</span><span class="pill" style="color:var(--go)">BOARDED</span><span class="pill" style="color:var(--late)">LAST CALL</span><span class="pill" style="color:#A08D5A">DEPARTED</span></div>
+      </div>
+      <div class="ticket"><div class="b"><div class="k">ONE TRIP <span>STOP 02/05</span></div><h4>Repro the bug in the lab</h4><div style="font:800 12px/1 var(--dot);font-variation-settings:'ROND' 100">VALID UNTIL 16 OCT 18:00</div></div><div class="s">Control</div></div>
+      <div style="display:flex;gap:26px;align-items:center;flex-wrap:wrap;padding:10px"><span class="stamp" style="color:#B3261E">Used<small>12 OCT 13:05</small></span><span class="stamp" style="color:#1E7044">Boarded<small>12 OCT 13:35</small></span>
+        <a class="btn p" style="border-radius:6px">+ Book a flight</a></div>
+    </div>
+  </section>
+
+  <section id="slides"><h2>Presentation slides <span>05</span></h2>
+    <p class="lede" style="margin-top:0">Five layouts cover any deck. They are also in the PowerPoint template.</p>
+    <div class="slides">
+      <div class="slide sl-title"><div class="stp"><i style="background:#3D9A5F"></i><i style="background:#2F64A8"></i><i style="background:#8455B8"></i><i style="background:#DA7A2C"></i><i style="background:#D4433A"></i></div>
+        <div class="e">PLATFORM 1 · OCT 2026</div><h5>Stop planning.<br><em>Start boarding.</em></h5><p>Next Stop · demo</p><span class="lbl">1 · Title</span></div>
+      <div class="slide sl-board"><div class="h">DEPARTURES</div>
+        <div class="r"><span>09:30</span><span>STANDUP</span><span class="ok">BOARDED</span></div>
+        <div class="r"><span>14:00</span><span>FIX NTN BUG</span><span>ON TIME</span></div>
+        <div class="r"><span>18:00</span><span>SHIP RELEASE</span><span class="lt">LAST CALL</span></div>
+        <span class="lbl" style="color:var(--on)">2 · Agenda board</span></div>
+      <div class="slide sl-floor"><span class="e">This week</span><h5>The numbers</h5>
+        <div class="cols"><div class="st"><b>14</b><span>Tickets torn</span></div><div class="st"><b>05</b><span>Flights departed</span></div><div class="st"><b style="color:var(--red)">06</b><span>Day streak</span></div></div><span class="lbl">3 · Stats</span></div>
+      <div class="slide sl-ticket"><div class="tk"><div class="b"><div class="k">ONE TRIP <span>02/05</span></div><h5>Repro in the lab</h5><p>One idea per slide, written as a ticket. Kicker, big title, one line of detail.</p></div><div class="s">Control</div></div><span class="lbl">4 · One idea</span></div>
+      <div class="slide sl-close"><h5>Next stop:<br>your first flight.</h5><p>NEXTSTOP · BOOK A FLIGHT →</p><span class="lbl">5 · Close / CTA</span></div>
+    </div>
+  </section>
+
+  <section id="voice"><h2>Voice & words <span>06</span></h2>
+    <div class="voice">
+      <div><b>Status</b><span>ON TIME · CLOSING · LAST CALL · BOARDED · DELAYED · DEPARTED</span></div>
+      <div><b>Nudge</b><span>Last call for passenger Alex. Board now.</span></div>
+      <div><b>Start</b><span>Gate open. Board to start the work.</span></div>
+      <div><b>Done</b><span>Flight WK104 departed on time · +750 mi</span></div>
+      <div><b>Headline</b><span>Stop planning. Start boarding.</span></div>
+    </div>
+  </section>
+
+  <section id="rules"><h2>Do & don't <span>07</span></h2>
+    <div class="dd">
+      <ul class="do"><li>Put every time, code and status on tiles or in Doto.</li><li>One red call to action per screen or slide.</li><li>Use a line colour for anything category-specific.</li><li>Show the five-colour stripe under every header.</li><li>Keep tickets as tickets: notches, perforation, stub.</li></ul>
+      <ul class="dont"><li>No amber text on the light floor.</li><li>No new accent colours.</li><li>No plain rounded cards for tickets.</li><li>No exclamation marks or emoji in UI copy.</li><li>No white text on Gym green or Home orange at small sizes; it is under 4.5:1 contrast.</li></ul>
+    </div>
+  </section>
+
+  <section id="files"><h2>Files <span>08</span></h2>
+    <ul class="files">
+      <li><a href="/playbook/DESIGN.md">DESIGN.md</a> · design tokens + rules (Google DESIGN.md spec). Give this to Claude or any AI tool to make on-brand slides or pages.</li>
+      <li><a href="/playbook/Next-Stop-template.pptx" download>Next-Stop-template.pptx</a> · the five slide layouts above, ready to edit in PowerPoint or Google Slides.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

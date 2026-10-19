@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sprint Loop · Next Stop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Alfa+Slab+One&family=Doto:wght,ROND@100..900,0..100&display=swap">
+<style>
+:root{--floor:#E5E0D4;--dot:rgba(40,36,30,.15);--ink:#17161A;--soft:#5D5950;--rule:rgba(23,22,26,.18);--surface:#F7F4ED;--paper:#FBF8F0;--sign:#111113;--on:#F3F0E8;--board:#141414;--ft:#2A2A2A;--fb:#202020;--amber:#F6C64B;--red:#E03A2D;--go:#4CCB8C;--late:#FF6E60;
+--f-dot:"Doto","Courier New",monospace;--f-sans:"Archivo","Helvetica Neue",Arial,sans-serif;--f-slab:"Alfa Slab One",Rockwell,Georgia,serif;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .13 0 0 0 0 .08 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--floor);background-image:radial-gradient(var(--dot) 1.1px,transparent 1.6px);background-size:16px 16px;color:var(--ink);font:400 15px/1.45 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topbar{background:var(--sign);color:var(--on)}
+.tb{max-width:1360px;margin:0 auto;padding:10px clamp(12px,3vw,28px);display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.logo{width:34px;height:34px;border-radius:50%;background:var(--red);display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.wm{font:800 21px/1 var(--f-sans);font-stretch:86%;white-space:nowrap}
+.wm small{font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--amber);letter-spacing:.12em;margin-left:8px}
+.sp{flex:1}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:7px;background:#000;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 11px 5px;font:800 13px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.06em;color:var(--amber);white-space:nowrap}
+.chip small{font:800 9.5px/1 var(--f-sans);letter-spacing:.14em;color:rgba(243,240,232,.55)}
+.lvl{display:grid;gap:4px;min-width:150px}
+.lvl-top{display:flex;justify-content:space-between;gap:10px;font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--amber);letter-spacing:.06em}
+.xpbar{height:8px;border-radius:5px;background:#2a2a2a;overflow:hidden}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),#ffd97a);box-shadow:0 0 8px rgba(246,198,75,.6);transition:width .7s cubic-bezier(.3,1.3,.5,1)}
+.combo{color:var(--late)!important}
+.combo[hidden]{display:none}
+.scrum{cursor:pointer}
+.scrum.ready{color:var(--go);border-color:rgba(76,203,140,.6);animation:breathe 1.8s ease-in-out infinite}
+@keyframes breathe{50%{box-shadow:0 0 14px rgba(76,203,140,.45)}}
+.icon-btn{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:transparent;border:0;cursor:pointer;color:var(--on)}
+.icon-btn:hover{background:rgba(255,255,255,.09)}
+.stripes{display:flex;height:5px}.stripes i{flex:1}
+.wrap{max-width:1360px;margin:0 auto;padding:18px clamp(12px,3vw,28px) 80px}
+@media(min-width:1800px){.wrap,.tb{max-width:1640px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:8px;padding:11px 15px;font:800 12px/1 var(--f-sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.btn.p{background:var(--red);color:#fff}.btn.g{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}.btn.d{background:var(--ink);color:var(--floor)}
+.btn.go{background:var(--go);color:#0d2a1b}.btn.am{background:var(--amber);color:#121212}
+.btn.sm{padding:8px 11px;font-size:11px}
+.proto{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:9px 12px 9px 14px;border:1.5px dashed var(--rule);border-radius:10px;font-size:13.5px;color:var(--soft)}
+.sign{position:relative;background:var(--sign);color:var(--on);border-radius:14px;padding:24px clamp(14px,2.4vw,24px) 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.sign::before{content:"";position:absolute;left:12px;right:12px;top:8px;height:2px;background:currentColor;opacity:.85}
+.eyebrow{font:800 13px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.12em;color:rgba(246,198,75,.7);text-transform:uppercase}
+.title{margin:8px 0 6px;font:800 clamp(30px,5vw,52px)/.95 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--amber);text-shadow:0 0 18px rgba(246,198,75,.35);text-transform:uppercase;letter-spacing:.02em}
+.goal{font:700 15.5px/1.35 var(--f-sans);color:rgba(243,240,232,.8);max-width:62ch}
+.sign-r{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.kv{display:grid;gap:5px}
+.kv small{font:800 10px/1 var(--f-sans);letter-spacing:.16em;text-transform:uppercase;color:rgba(243,240,232,.55)}
+.tiles{display:flex;gap:2px;--tw:22px}
+.t{position:relative;flex:none;width:var(--tw);height:calc(var(--tw)*1.42);border-radius:calc(var(--tw)*.13);background:linear-gradient(180deg,var(--ft) 0 50%,var(--fb) 50% 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 1px 0 rgba(0,0,0,.6);color:var(--amber);overflow:hidden}
+.t::before{content:attr(data-c);position:absolute;inset:0;display:grid;place-items:center;font:800 calc(var(--tw)*1.12)/1 var(--f-dot);font-variation-settings:"ROND" 100;text-shadow:0 0 calc(var(--tw)*.35) rgba(246,198,75,.38)}
+.t::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .5px);height:1px;background:rgba(0,0,0,.75)}
+.t.f::before{animation:flp 80ms ease-out}
+@keyframes flp{50%{transform:scaleY(.2);opacity:.45}}
+.tiles.late .t{color:var(--late)}
+.kv .tiles{--tw:30px}
+.pill{font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;padding:7px 11px 6px;border-radius:999px;background:#000;border:1px solid rgba(255,255,255,.15);color:var(--amber);white-space:nowrap}
+.stage{margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);gap:14px;align-items:stretch}
+@media(max-width:1060px){.stage{grid-template-columns:1fr 1fr}.loopbox{grid-column:1/-1;order:-1}}
+@media(max-width:640px){.stage{grid-template-columns:1fr}}
+.panel{background:var(--board);background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.4px);background-size:5px 5px;border-radius:14px;color:var(--on);padding:14px;min-width:0;display:flex;flex-direction:column}
+.ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px;font:800 15px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.ph small{font:800 10px/1 var(--f-sans);letter-spacing:.14em;color:rgba(243,240,232,.5)}
+.blist{list-style:none;margin:0;padding:0;display:grid;gap:7px;overflow:auto;max-height:420px;align-content:start}
+.bi{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;background:#1d1d1d;border:1px solid rgba(255,255,255,.06)}
+.bi .pts{font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;color:#111;background:var(--amber);border-radius:6px;padding:5px 6px 4px;min-width:30px;text-align:center}
+.bi b{font:700 14px/1.25 var(--f-sans);overflow-wrap:anywhere}
+.bi button{border:1px solid rgba(246,198,75,.45);background:transparent;color:var(--amber);border-radius:7px;padding:6px 8px;font:800 10.5px/1 var(--f-sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.bi button:hover{background:rgba(246,198,75,.12)}
+.badd{display:flex;gap:6px;margin-top:10px}
+.badd input{flex:1;min-width:0;font:700 14px/1.2 var(--f-sans);background:#0c0c0c;color:var(--on);border:1px solid #333;border-radius:8px;padding:9px 10px}
+.badd select{font:800 12px/1 var(--f-dot);background:#0c0c0c;color:var(--amber);border:1px solid #333;border-radius:8px;padding:0 6px}
+.empty{padding:16px 8px;text-align:center;font:800 12px/1.35 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.06em;color:rgba(243,240,232,.45);text-transform:uppercase;border:1.5px dashed rgba(255,255,255,.14);border-radius:10px}
+.loopbox{padding:10px;align-items:center;justify-content:center;background-image:radial-gradient(circle at 50% 48%,rgba(132,85,184,.28),transparent 58%),radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.4px);background-size:auto,5px 5px}
+.loopsvg{width:100%;max-width:520px;height:auto;display:block;overflow:visible}
+.seg-bg{fill:none;stroke:#262626;stroke-width:44}
+.seg{fill:none;stroke-width:44}
+.seg-lbl{font:800 24px/1 var(--f-sans);font-stretch:80%;letter-spacing:.14em;fill:#fff;text-anchor:middle;dominant-baseline:middle;pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,.45);stroke-width:3px}
+.seg-hit{fill:none;stroke:transparent;stroke-width:60;cursor:pointer}
+.chev{fill:rgba(255,255,255,.4);pointer-events:none}
+.ctr-k{font:800 13px/1 var(--f-sans);letter-spacing:.2em;fill:rgba(243,240,232,.55);text-anchor:middle}
+.ctr-n{font:900 64px/1 var(--f-dot);font-variation-settings:"ROND" 100;fill:var(--amber);text-anchor:middle}
+.ctr-s{font:800 16px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;fill:rgba(243,240,232,.75);text-anchor:middle}
+.train{transition:transform 1.6s cubic-bezier(.5,0,.3,1)}
+.train .bob{animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-2px)}}
+.scrumloop{cursor:pointer}
+.flowrow{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:520px;margin-top:4px;font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;color:rgba(243,240,232,.6)}
+.flowrow b{color:var(--amber)}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;align-content:start;overflow:auto;max-height:300px}
+.troph{border-radius:10px;padding:10px 8px 8px;background:linear-gradient(180deg,#1f2a22,#162019);border:1px solid rgba(76,203,140,.3);text-align:center;font:700 11.5px/1.25 var(--f-sans);color:rgba(243,240,232,.85);overflow-wrap:anywhere}
+.troph i{display:block;font-style:normal;font-size:22px;margin-bottom:4px}
+.troph.new{animation:land .7s cubic-bezier(.2,1.4,.4,1)}
+@keyframes land{from{transform:translateY(-30px) scale(.6);opacity:0}}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;font:800 10.5px/1 var(--f-sans);letter-spacing:.08em;text-transform:uppercase;background:#1b1b1b;color:rgba(243,240,232,.6);border:1px dashed rgba(255,255,255,.22)}
+.bdg.on{background:rgba(246,198,75,.13);color:var(--amber);border:1px solid rgba(246,198,75,.55)}
+.mission{margin-top:16px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:10px;border-top:3px solid var(--ink);margin:0 0 12px;font:800 12.5px/1.2 var(--f-sans);letter-spacing:.14em;text-transform:uppercase}
+.sec-h span{font:800 13px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.06em;color:var(--ink)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.tab{border:0;border-radius:999px;padding:8px 12px 7px;font:800 11.5px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--sc)}
+.tab.on{background:var(--sc);color:#fff;box-shadow:none}
+.tab.cur::after{content:" ●";color:var(--amber)}
+.gate{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px;border-radius:12px;background:#0B0B0B;color:var(--amber);margin-bottom:14px;box-shadow:inset 0 0 0 1px #000}
+.gate.ready{box-shadow:inset 0 0 0 2px var(--go)}
+.gate b{display:block;font:800 16px/1.15 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.08em;text-transform:uppercase}
+.gate span{font:600 13.5px/1.35 var(--f-sans);color:rgba(246,198,75,.72)}
+.gbar{height:10px;border-radius:6px;background:#2a2a2a;overflow:hidden;min-width:160px;flex:1;max-width:320px}
+.gbar i{display:block;height:100%;background:var(--sc,var(--go));transition:width .6s}
+.quests{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))}
+.q{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 62px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.2)) drop-shadow(0 8px 12px rgba(40,30,15,.16));transform:rotate(var(--tilt,0deg));transition:transform .3s cubic-bezier(.2,.9,.3,1.3)}
+.q.doing{transform:rotate(0) translateY(-3px);outline:3px solid var(--sc);outline-offset:3px;border-radius:12px}
+.q.pop{animation:pop .55s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes pop{0%{transform:scale(.85) rotate(-3deg)}}
+.q-b{background:var(--paper);background-image:var(--noise);padding:10px 13px 11px;border-radius:10px 0 0 10px;min-width:0}
+.q-k{display:flex;justify-content:space-between;gap:6px;font:400 12px/1 var(--f-slab);letter-spacing:.06em;color:var(--sc);text-transform:uppercase;padding-bottom:7px;border-bottom:2px solid var(--sc);margin-bottom:8px}
+.q-k span{font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--ink)}
+.q h4{margin:0 0 10px;font:800 17px/1.12 var(--f-sans);font-stretch:86%;text-transform:uppercase;overflow-wrap:anywhere}
+.q-f{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:31px}
+.q-st{font:800 12px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.08em;color:var(--ink);text-transform:uppercase}
+.q.doing .q-st{color:var(--red)}
+.q-s{background:var(--sc);color:#fff;border-radius:0 10px 10px 0;display:grid;place-items:center;align-content:center;gap:2px;text-align:center;position:relative}
+.q-s::before{content:"";position:absolute;left:-1.5px;top:8px;bottom:8px;width:3px;background-image:radial-gradient(circle,rgba(255,255,255,.75) 1.3px,transparent 1.7px);background-size:3px 7px}
+.q-s b{font:800 22px/1 var(--f-dot);font-variation-settings:"ROND" 100}
+.q-s small{font:800 9px/1 var(--f-sans);letter-spacing:.14em}
+.q.done .q-b h4,.q.done .q-k{opacity:.5}
+.q-stamp{position:absolute;right:76px;bottom:10px;padding:3px 9px 2px;border:2.5px solid currentColor;border-radius:7px;color:#1E7044;font:400 15px/1 var(--f-slab);letter-spacing:.08em;transform:rotate(-9deg);background:rgba(251,248,240,.65);pointer-events:none}
+.q.locked .q-f .btn{display:none}
+.lockline{font:800 12px/1.3 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.06em;color:var(--soft);text-transform:uppercase;margin:0 0 12px}
+.ovl{position:fixed;inset:0;z-index:50;display:grid;place-items:center;align-content:center;gap:16px;padding:24px;background:rgba(8,8,8,.96);color:var(--amber);text-align:center}
+.ovl[hidden]{display:none}
+.ovl>*{position:relative;z-index:52}
+.ovl .k{font:800 13px/1.2 var(--f-sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(246,198,75,.75)}
+.ovl .tiles{--tw:clamp(20px,5.4vw,46px);flex-wrap:wrap;justify-content:center;row-gap:6px}
+.ovl .s{font:700 16px/1.35 var(--f-sans);color:var(--on);max-width:38ch}
+.bigstamp{font:400 clamp(34px,8vw,64px)/1 var(--f-slab);letter-spacing:.08em;color:var(--go);border:6px solid currentColor;border-radius:14px;padding:10px 22px 6px;transform:rotate(-8deg);animation:slam .45s cubic-bezier(.3,1.5,.5,1) both;background:#080808}
+@keyframes slam{from{transform:rotate(-8deg) scale(2.4);opacity:0}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:51;overflow:hidden}
+.conf{position:absolute;top:-30px;width:14px;height:20px;border-radius:3px}
+.xpfloat{position:fixed;z-index:60;pointer-events:none;font:800 22px/1 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--amber);text-shadow:0 0 10px rgba(246,198,75,.7),0 2px 0 #000;letter-spacing:.04em;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;background:#0D0D0D;color:var(--amber);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:12px 16px;font:800 13px/1.3 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.05em;text-transform:uppercase;opacity:0;transition:opacity .25s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+#toast.on{opacity:1}
+.edit-btn{border:1.5px solid rgba(243,240,232,.35);background:transparent;color:var(--on);border-radius:999px;padding:7px 12px;font:800 11px/1 var(--f-sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-top:10px}
+.edit-btn:hover{border-color:var(--amber);color:var(--amber)}
+.bi select{font:800 10.5px/1 var(--f-sans);letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--amber);border:1px solid rgba(246,198,75,.45);border-radius:7px;padding:5px 4px;cursor:pointer;max-width:110px}
+.bi select option{background:#111;color:var(--on)}
+.bi .ic-b{border:0;background:transparent;color:rgba(243,240,232,.55);cursor:pointer;padding:4px;font-size:14px;line-height:1}
+.bi .ic-b:hover{color:var(--amber)}
+.bi{grid-template-columns:auto minmax(0,1fr) auto auto}
+.bi .acts{display:flex;gap:2px;align-items:center}
+.q-edit{position:absolute;top:30px;right:70px;border:0;background:rgba(0,0,0,.06);color:var(--soft);border-radius:6px;width:26px;height:24px;cursor:pointer;font-size:13px;z-index:2}
+.q-edit:hover{background:var(--amber);color:#111}
+.q.locked .q-edit{display:block}
+.qadd{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px;border:2px dashed var(--rule);border-radius:12px;align-items:center}
+.qadd input{flex:1 1 200px;min-width:0;font:700 15px/1.2 var(--f-sans);color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--ink);padding:7px 0}
+.qadd input:focus{outline:none;border-bottom-color:var(--red)}
+.qadd select{font:700 13px/1 var(--f-sans);padding:8px;border-radius:8px;border:1.5px solid var(--rule);background:#fff;color:var(--ink)}
+.qadd .lbl{font:800 11px/1 var(--f-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--soft);width:100%}
+.planned-note{font:800 11px/1.3 var(--f-dot);font-variation-settings:"ROND" 100;color:var(--soft);letter-spacing:.06em;text-transform:uppercase;margin:0 0 12px}
+.tab .n{opacity:.75;margin-left:4px}
+/* modal */
+.mdl{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(8,8,8,.78)}
+.mdl[hidden]{display:none}
+.mdl-c{width:min(480px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--surface);color:var(--ink);border-radius:16px;box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.mdl-h{position:relative;background:var(--sign);color:var(--on);padding:22px 18px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mdl-h::before{content:"";position:absolute;left:12px;right:12px;top:8px;height:2px;background:currentColor;opacity:.85}
+.mdl-h h3{margin:0;font:800 22px/1 var(--f-sans);font-stretch:88%}
+.mdl-h button{border:0;background:transparent;color:var(--on);font-size:20px;cursor:pointer}
+.mdl form{display:grid;gap:14px;padding:18px}
+.mdl label{display:grid;gap:6px;font:800 11px/1.2 var(--f-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.mdl label small{text-transform:none;letter-spacing:0;font-weight:600}
+.mdl input,.mdl select,.mdl textarea{font:600 16px/1.3 var(--f-sans);color:var(--ink);background:#fff;border:1.5px solid var(--rule);border-radius:9px;padding:10px 12px;width:100%}
+.mdl textarea{min-height:64px;resize:vertical}
+.mdl .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mdl .foot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+.mdl .foot .sp{flex:1}
+/* tour */
+.tour{position:fixed;inset:0;z-index:80;pointer-events:none}
+.tour[hidden]{display:none}
+.tour-hole{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(10,10,10,.66),0 0 0 3px var(--amber);transition:all .28s cubic-bezier(.3,1,.4,1);pointer-events:none}
+.tour-bub{position:fixed;width:min(370px,calc(100vw - 24px));background:#0D0D0D;color:var(--on);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px;pointer-events:auto;box-shadow:0 24px 50px -16px rgba(0,0,0,.7);transition:top .28s,left .28s}
+.tour-bub .k{display:flex;justify-content:space-between;font:800 11px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.12em;color:var(--amber);text-transform:uppercase;margin-bottom:8px}
+.tour-bub h3{margin:0 0 6px;font:800 19px/1.15 var(--f-sans);font-stretch:88%}
+.tour-bub p{margin:0 0 12px;font:500 14px/1.45 var(--f-sans);color:rgba(243,240,232,.86)}
+.tour-bub p b{color:var(--amber)}
+.tour-bub .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tour-bub .row .sp{flex:1}
+.tour-bub .skip{background:transparent;border:0;color:rgba(243,240,232,.75);cursor:pointer;font:700 12px/1 var(--f-sans);padding:8px 2px}
+.desc{margin:6px 0 8px;font:500 13px/1.4 var(--f-sans);color:var(--soft);white-space:pre-wrap;overflow-wrap:anywhere;max-height:5.6em;overflow:hidden}
+.bi .desc{color:rgba(243,240,232,.62);margin:3px 0 0;font-size:12px;max-height:4.2em}
+.bi .bt{min-width:0}
+.links{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 8px}
+.lnk{font:800 10.5px/1 var(--f-sans);letter-spacing:.04em;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:999px;padding:5px 8px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bi .lnk{color:var(--amber);border-color:rgba(246,198,75,.35)}
+.lnk.kids{cursor:default;background:rgba(0,0,0,.05)}
+.q-x{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.q-x button{font:800 10.5px/1 var(--f-sans);letter-spacing:.08em;text-transform:uppercase;border:1.5px dashed var(--ink);background:transparent;color:var(--ink);border-radius:7px;padding:6px 8px;cursor:pointer;opacity:.8}
+.q-x button:hover{color:var(--ink);border-color:var(--ink)}
+.q-x button.rej:hover{color:var(--red);border-color:var(--red)}
+.q.hl{animation:hl 1.6s ease}
+@keyframes hl{0%,40%{box-shadow:0 0 0 4px var(--amber)}100%{box-shadow:none}}
+.badd{flex-wrap:wrap}
+.badd textarea{flex:1 1 100%;order:3;min-height:44px;resize:vertical;font:500 13px/1.35 var(--f-sans);background:#0c0c0c;color:var(--on);border:1px solid #333;border-radius:8px;padding:8px 10px}
+.rejbox{margin-top:12px;border-top:1px dashed #333;padding-top:8px}
+.rejbox summary{cursor:pointer;font:800 11px/1 var(--f-dot);font-variation-settings:"ROND" 100;letter-spacing:.1em;color:var(--late);text-transform:uppercase;padding:6px 0}
+.rj{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;padding:7px 0;border-bottom:1px solid #222;font:600 12.5px/1.3 var(--f-sans);color:rgba(243,240,232,.7)}
+.rj s{color:rgba(243,240,232,.85)}
+.rj small{display:block;color:rgba(243,240,232,.5);font-size:11px}
+.rj button{border:1px solid rgba(76,203,140,.5);background:transparent;color:var(--go);border-radius:7px;padding:5px 8px;font:800 10.5px/1 var(--f-sans);cursor:pointer}
+@media(max-width:640px){.q{--tilt:0deg!important;transform:none}.lvl{min-width:120px;flex:1}.hud{width:100%}.chip{padding:6px 9px 5px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="tb">
+  <a class="brand" href="/"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="wm">Next Stop <small>SPRINT LOOP</small></span></a>
+  <span class="sp"></span>
+  <div class="hud">
+    <div class="lvl" title="Level and XP"><div class="lvl-top"><span id="h-lvl">LVL 1</span><span id="h-xp">0 / 200 XP</span></div><div class="xpbar"><i id="h-xpbar"></i></div></div>
+    <span class="chip"><small>MILES</small><span id="h-mi">0</span></span>
+    <span class="chip combo" id="h-combo" hidden><small>COMBO</small><span id="h-combo-n">x2</span></span>
+    <button class="chip scrum" id="h-scrum" title="Daily stand-up check-in"><small>STAND-UP</small><span id="h-scrum-n">GO</span></button>
+    <button class="chip" id="tourBtn" title="Show me how this works" style="cursor:pointer"><small>HOW TO</small>? TOUR</button>
+    <button class="icon-btn" id="snd" aria-label="Sound"></button>
+  </div>
+</div></header>
+<div class="stripes"><i style="background:#3D9A5F"></i><i style="background:#2F64A8"></i><i style="background:#8455B8"></i><i style="background:#DA7A2C"></i><i style="background:#D4433A"></i></div>
+
+<div class="wrap">
+  <div class="proto"><span>Saved in this browser only · start your own project or play with the sample</span><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn p sm" id="newProj">+ New project</button><button class="btn g sm" id="reset">Load sample</button></span></div>
+  <section class="sign">
+    <div><div class="eyebrow" id="eyebrow"></div><h1 class="title" id="title"></h1><div class="goal" id="goal"></div><button class="edit-btn" id="editSprint">✎ Edit project &amp; dates</button></div>
+    <div class="sign-r">
+      <div class="kv"><small>Days left</small><span class="tiles" id="days"></span></div>
+      <div class="kv"><small>Lap</small><span class="tiles" id="lap"></span></div>
+      <span class="pill" id="status"></span>
+    </div>
+  </section>
+  <section class="stage">
+    <div class="panel">
+      <div class="ph">Backlog <small>IDEAS · PLAN THEM INTO A STAGE</small></div>
+      <ul class="blist" id="backlog"></ul>
+      <form class="badd" id="badd" autocomplete="off"><input id="badd-t" maxlength="80" placeholder="New idea / task…"><select id="badd-p" aria-label="Points"><option>1</option><option>2</option><option selected>3</option><option>5</option><option>8</option></select><button class="btn am sm">Add</button><textarea id="badd-d" maxlength="400" placeholder="Description (optional): what, why, done when…"></textarea></form>
+      <details class="rejbox" id="rejbox" hidden><summary id="rej-n">Rejected</summary><div id="rejlist"></div></details>
+    </div>
+    <div class="panel loopbox">
+      <svg class="loopsvg" id="loop" viewBox="-40 -30 680 640" role="img" aria-label="Sprint loop"></svg>
+      <div class="flowrow"><span><b>BACKLOG</b> IN ▶</span><span><b>PRODUCT</b> OUT ▶</span></div>
+    </div>
+    <div class="panel">
+      <div class="ph">Product <small id="ship-n">0 SHIPPED</small></div>
+      <div class="shelf" id="shelf"></div>
+      <div class="badges" id="badges"></div>
+    </div>
+  </section>
+  <section class="mission">
+    <h2 class="sec-h"><span style="font:inherit;color:inherit;letter-spacing:inherit" id="m-name"></span><span id="m-meta"></span></h2>
+    <div class="tabs" id="tabs"></div>
+    <div id="gate"></div>
+    <p class="lockline" id="lockline" hidden></p>
+    <div class="quests" id="quests"></div>
+    <form class="qadd" id="qadd" autocomplete="off"><span class="lbl" id="qadd-l">Add a quest to this stage</span><input id="qadd-t" maxlength="90" placeholder="e.g. Write the test plan"><select id="qadd-p" aria-label="Points"><option value="1">1 pt · 10 XP</option><option value="2">2 pts · 20 XP</option><option value="3" selected>3 pts · 30 XP</option><option value="5">5 pts · 50 XP</option><option value="8">8 pts · 80 XP</option></select><button class="btn d sm">+ Add quest</button></form>
+  </section>
+</div>
+
+<div class="ovl" id="ovl" hidden><div class="k" id="ovl-k"></div><div id="ovl-mid"></div><div class="s" id="ovl-s"></div><div id="ovl-btn"></div></div>
+<div class="mdl" id="mdl" hidden><div class="mdl-c" role="dialog" aria-modal="true"><div class="mdl-h"><h3 id="mdl-t"></h3><button type="button" data-mclose aria-label="Close">✕</button></div><form id="mdl-f" novalidate autocomplete="off"></form></div></div>
+<div class="tour" id="tour" hidden><div class="tour-hole" id="tourHole"></div><div class="tour-bub" id="tourBub" role="dialog" aria-live="polite"></div></div>
+<div id="fx"></div>
+<div id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+const KEY = 'next-stop:sprint-loop:v1', DAY = 864e5, MIN = 6e4, XP_LVL = 200, COMBO_WIN = 10 * MIN;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+const uid = () => Math.random().toString(36).slice(2, 9);
+const pad = n => String(n).padStart(2, '0');
+const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const dshort = ts => { const d = new Date(ts); return pad(d.getDate()) + ' ' + MON[d.getMonth()]; };
+const dayKey = ts => new Date(ts).toDateString();
+const STAGES = [
+  { key: 'plan', name: 'Plan', c: '#2F64A8' },
+  { key: 'design', name: 'Design', c: '#8455B8' },
+  { key: 'build', name: 'Build', c: '#DA7A2C' },
+  { key: 'review', name: 'Test & Review', short: 'Review', c: '#3D9A5F' },
+];
+const BADGES = [
+  ['first', '🎫', 'First quest'], ['combo3', '🔥', 'Combo x3'], ['gate', '✅', 'Gate approved'],
+  ['ship', '🚀', 'Sprint shipped'], ['scrum3', '☕', '3-day stand-up'], ['lvl3', '⭐', 'Level 3'],
+];
+function sample() {
+  const now = Date.now();
+  const Q = (st, title, pts, state) => ({ id: uid(), st, title, pts, state: state || 'todo' });
+  return {
+    name: 'Sprint 42', goal: 'Launch the new onboarding flow, signed off by the customer.',
+    start: now - DAY, end: now + 9 * DAY, lap: 1, current: 0,
+    quests: [
+      Q('plan', 'Agree scope with the customer', 2, 'done'), Q('plan', 'Write acceptance criteria', 3), Q('plan', 'Split into stories', 2),
+      Q('design', 'User-flow diagram', 3), Q('design', 'Settings schema', 5),
+      Q('build', 'Build sign-up screens', 8), Q('build', 'Automate regression tests', 5),
+      Q('review', 'Test run on staging + logs', 3), Q('review', 'Demo to the customer', 2),
+    ],
+    backlog: [Q(null, 'Accessibility pass', 3), Q(null, 'Bug triage clean-up', 2), Q(null, 'Help-centre article', 5)],
+    shipped: [], xp: 20, miles: 2, combo: 0, lastDone: 0, badges: ['first'], scrumDays: [], approvals: 0, sound: true,
+  };
+}
+function blank(name, goal, days) {
+  const now = Date.now();
+  return { name: name || 'My project', goal: goal || 'What does done look like for this sprint?', start: now, end: now + (days || 14) * DAY, lap: 1, current: 0,
+    quests: [], backlog: [], shipped: [], rejected: [], xp: 0, miles: 0, combo: 0, lastDone: 0, badges: [], scrumDays: [], approvals: 0, sound: true };
+}
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || sample(); } catch (e) { S = sample(); }
+S.rejected = S.rejected || [];
+let view = Math.min(S.current, STAGES.length - 1);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const finished = () => S.current >= STAGES.length;
+const stageQ = i => S.quests.filter(q => q.st === STAGES[i].key);
+const level = () => 1 + Math.floor(S.xp / XP_LVL);
+const sum = arr => arr.reduce((a, x) => a + x.pts, 0);
+
+/* sound */
+let ctx = null;
+function ac() { if (!S.sound) return null; try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); } catch (e) { return null; } return ctx; }
+function tone(f, d, type = 'sine', g0 = .25, delay = 0) { const c = ac(); if (!c) return; const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(g0, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .05); }
+const sTick = () => tone(1900, .05, 'square', .06);
+const sStart = () => { tone(440, .1, 'triangle', .18); tone(660, .14, 'triangle', .16, .08); };
+const sCoin = n => { tone(988, .08, 'square', .09); tone(1319, .22, 'square', .09, .08); if (n > 1) tone(1760, .2, 'square', .07, .18); };
+const sStamp = () => { tone(140, .18, 'sine', .55); tone(60, .2, 'sine', .3, .02); };
+const sChime = () => [659.25, 783.99, 987.77].forEach((f, i) => tone(f, 1.1, 'sine', .26, i * .28));
+const sLevel = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .3, 'square', .08, i * .12));
+const sWhistle = () => { tone(1180, .5, 'sine', .14); tone(1480, .6, 'sine', .1, .1); };
+
+/* flap tiles */
+const FL = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.-/!';
+function tiles(el, text, n) {
+  text = String(text).toUpperCase(); n = n || text.length;
+  text = text.padEnd(n).slice(0, n);
+  if (el.children.length !== n) el.innerHTML = '<span class="t" data-c=" "></span>'.repeat(n);
+  Array.from(el.children).forEach((t, i) => {
+    const to = text[i]; if (t.dataset.c === to) return;
+    let k = 0; const steps = 4 + (i % 4);
+    const iv = setInterval(() => {
+      t.classList.remove('f'); void t.offsetWidth; t.classList.add('f');
+      if (++k >= steps) { t.dataset.c = to; clearInterval(iv); }
+      else t.dataset.c = FL[(FL.indexOf(to) - steps + k + FL.length * 2) % FL.length] || to;
+    }, 55 + i * 4);
+  });
+}
+
+/* loop SVG */
+const CX = 300, CY = 290, R = 215, GAP = 3.5, BOT = 50 / 360; // degrees kept open at the bottom for the in/out tracks
+const ang = f => (90 + 360 * (BOT / 2 + f * (1 - BOT))) * Math.PI / 180; // clockwise from the bottom
+const pt = (f, r = R) => [CX + r * Math.cos(ang(f)), CY + r * Math.sin(ang(f))];
+function arc(f0, f1, r = R) { const [x0, y0] = pt(f0, r), [x1, y1] = pt(f1, r); return 'M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A' + r + ' ' + r + ' 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1); }
+const TRAIN = '<g class="bob"><rect x="-26" y="-13" width="38" height="22" rx="5" fill="#F6C64B"/><path d="M12 -13h5a11 11 0 0 1 11 11v11H12z" fill="#E03A2D"/><rect x="-21" y="-8" width="8" height="7" rx="1.5" fill="#111"/><rect x="-9" y="-8" width="8" height="7" rx="1.5" fill="#111"/><rect x="3" y="-8" width="6" height="7" rx="1.5" fill="#111"/><rect x="16" y="-8" width="7" height="6" rx="1.5" fill="#111"/><circle cx="-17" cy="12" r="4" fill="#ddd"/><circle cx="2" cy="12" r="4" fill="#ddd"/><circle cx="20" cy="12" r="4" fill="#ddd"/></g>';
+function trainFrac() { if (finished()) return 0; const q = stageQ(S.current), tot = sum(q), dn = sum(q.filter(x => x.state === 'done')); return tot ? .08 + .84 * dn / tot : .08; }
+// one arrowhead shape used everywhere on the loop: tip at (x,y) + dir*size/2, pointing along dir
+function head(x, y, dir, size, fill, op) {
+  const c = Math.cos(dir), si = Math.sin(dir), L = size, W = size * .62;
+  const tip = [x + c * L / 2, y + si * L / 2], b = [x - c * L / 2, y - si * L / 2];
+  const l = [b[0] - si * W, b[1] + c * W], r = [b[0] + si * W, b[1] - c * W], n = [x - c * L * .12, y - si * L * .12];
+  return '<path d="M' + [l, tip, r, n].map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L') + 'Z" fill="' + fill + '"' + (op != null ? ' opacity="' + op + '"' : '') + ' class="ahead"/>';
+}
+// ribbon arrow: band from f0 to f1 with a chevron head at f1 and a swallowtail notch at f0 (they interlock)
+const RW = 30, HD = 26; // half band width, head depth (px)
+function ribbon(f0, f1) {
+  const df = HD / (2 * Math.PI * R * (1 - BOT)), Ro = R + RW, Ri = R - RW, P = (f, r) => pt(f, r).map(v => v.toFixed(1)).join(' ');
+  return 'M' + P(f0, Ro) + ' A' + Ro + ' ' + Ro + ' 0 0 1 ' + P(f1 - df, Ro) + ' L' + P(f1, R) + ' L' + P(f1 - df, Ri) +
+    ' A' + Ri + ' ' + Ri + ' 0 0 0 ' + P(f0, Ri) + ' L' + P(f0 + df, R) + 'Z';
+}
+function drawLoop() {
+  const n = STAGES.length, seg = 1 / n;
+  let h = '<defs><filter id="glow"><feGaussianBlur stdDeviation="6"/></filter><filter id="soft"><feGaussianBlur stdDeviation="5"/></filter><filter id="neon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  STAGES.forEach((st, i) => {
+    const DF = HD / (2 * Math.PI * R * (1 - BOT)), G = .9 / 360, f0 = i ? i * seg + G : 0, f1 = i === n - 1 ? 1 : (i + 1) * seg + DF - G;
+    const q = stageQ(i), tot = sum(q), dn = sum(q.filter(x => x.state === 'done'));
+    const cur = i === S.current && !finished(), past = i < S.current || finished();
+    const p = cur ? (tot ? dn / tot : 0) : past ? 1 : 0, d = ribbon(f0, f1);
+    const len = 2 * Math.PI * R * (f1 - f0) * (1 - BOT) + HD;
+    h += '<mask id="pm' + i + '"><path filter="url(#soft)" d="' + arc(f0, Math.min(f1 + .02, 1)) + '" fill="none" stroke="#fff" stroke-width="' + (RW * 2 + 20) + '" stroke-dasharray="' + (len * p).toFixed(1) + ' ' + (len * 2).toFixed(1) + '"/></mask>';
+    h += '<path d="' + d + '" fill="' + st.c + '" fill-opacity="' + (cur ? .32 : past ? .26 : .2) + '"/>';
+    if (p > 0) h += '<path d="' + d + '" fill="' + st.c + '" fill-opacity=".85" mask="url(#pm' + i + ')"/>';
+    h += '<path d="' + d + '" fill="none" stroke="' + st.c + '" stroke-width="' + (cur ? 5 : 3.5) + '" stroke-linejoin="round" stroke-opacity="' + (cur || past ? 1 : .6) + '" filter="url(#neon)"/>';
+    const fm = (f0 + f1) / 2, [lx, ly] = pt(fm); let rot = ang(fm) * 180 / Math.PI + 90; rot = ((rot % 360) + 360) % 360; if (rot > 90 && rot < 270) rot -= 180;
+    h += '<text class="seg-lbl" x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" transform="rotate(' + rot.toFixed(1) + ' ' + lx.toFixed(1) + ' ' + ly.toFixed(1) + ')">' + esc((st.short || st.name).toUpperCase()) + '</text>';
+    if (past) { const [fx, fy] = pt(fm, R + RW + 24); h += '<text x="' + fx.toFixed(1) + '" y="' + fy.toFixed(1) + '" text-anchor="middle" dominant-baseline="middle" font-size="22">✅</text>'; }
+    h += '<path class="seg-hit" data-st="' + i + '" d="' + arc(f0, f1) + '"><title>' + esc(st.name) + '</title></path>';
+  });
+  const today = S.scrumDays.includes(dayKey(Date.now())), sc = today ? '#4CCB8C' : '#8455B8';
+  h += '<g class="scrumloop" id="scrumloop" transform="translate(552 44)"><circle r="48" fill="#141414" stroke="' + sc + '" stroke-width="10" stroke-dasharray="236 66"/>' +
+    head(48 * Math.cos(5), 48 * Math.sin(5), 5 + Math.PI / 2, 28, sc) +
+    '<text text-anchor="middle" y="-4" class="ctr-s" style="font-size:14px">DAILY</text><text text-anchor="middle" y="14" class="ctr-s" style="font-size:14px">' + (today ? 'DONE ✓' : 'SCRUM') + '</text></g>';
+  const total = sum(S.quests), done = sum(S.quests.filter(x => x.state === 'done'));
+  const pct = finished() ? 100 : total ? Math.round(done / total * 100) : 0;
+  const RC = 124, cl = 2 * Math.PI * RC;
+  h += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (RC + 10) + '" fill="#141018" stroke="rgba(255,255,255,.08)" stroke-width="2"/>';
+  h += '<circle cx="' + CX + '" cy="' + CY + '" r="' + RC + '" fill="#1b1030" stroke="rgba(255,255,255,.07)" stroke-width="8"/>';
+  h += '<circle cx="' + CX + '" cy="' + CY + '" r="' + RC + '" fill="none" stroke="#F6C64B" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + (cl * pct / 100).toFixed(1) + ' ' + cl.toFixed(1) + '" transform="rotate(-90 ' + CX + ' ' + CY + ')" opacity=".9"/>';
+  h += '<text class="ctr-k" x="' + CX + '" y="' + (CY - 46) + '">SPRINT · LAP ' + S.lap + '</text>';
+  h += '<text class="ctr-n" x="' + CX + '" y="' + (CY + 14) + '">' + pct + '%</text>';
+  h += '<text class="ctr-s" x="' + CX + '" y="' + (CY + 48) + '">SPRINT ' + done + ' / ' + total + ' MI</text>';
+  h += '<text class="ctr-s" x="' + CX + '" y="' + (CY + 70) + '" style="fill:' + '#F6C64B;font-size:17px">' + (finished() ? 'READY TO SHIP' : 'NOW: ' + STAGES[S.current].name.toUpperCase()) + '</text>';
+  // lanes join the ring tangentially: backlog runs right, U-turns and docks into Plan's notched tail; product leaves Review's head and runs right
+  const [ix, iy] = pt(0), [ox, oy] = pt(1), oo = finished() ? 1 : .45, dI = ang(0) + Math.PI / 2, dO = ang(1) + Math.PI / 2, LI = iy + 92, LO = iy + 92;
+  const DF0 = HD / (2 * Math.PI * R * (1 - BOT)), [nvx, nvy] = pt(DF0), ex = nvx - Math.cos(dI) * 40, ey = nvy - Math.sin(dI) * 40; // stop just short of Plan's tail, head fills the notch
+  const laneIn = 'M-30 ' + LI + ' H' + (CX - 120) + ' C' + (CX - 40) + ' ' + LI + ' ' + (ex - Math.cos(dI) * 70).toFixed(1) + ' ' + (ey - Math.sin(dI) * 70).toFixed(1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1);
+  const sx = ox - Math.cos(dO) * 4, sy = oy - Math.sin(dO) * 4;
+  const laneOut = 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' C' + (sx + Math.cos(dO) * 60).toFixed(1) + ' ' + (sy + Math.sin(dO) * 60).toFixed(1) + ' ' + (CX + 20) + ' ' + LO + ' ' + (CX + 110) + ' ' + LO + ' H582';
+  const lane = (d, c, dark, op) => '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="28" opacity="' + op + '" filter="url(#neon)"/><path d="' + d + '" fill="none" stroke="' + dark + '" stroke-width="19" opacity="' + op + '"/>';
+  h += lane(laneIn, '#F0A0A0', '#3a1c22', .95) + head(nvx - Math.cos(dI) * 20, nvy - Math.sin(dI) * 20, dI, 40, '#F0A0A0', .95);
+  h += lane(laneOut, '#4CCB8C', '#123222', oo) + head(598, LO, 0, 46, '#4CCB8C', oo);
+  h += head(70, LI, 0, 18, 'rgba(255,255,255,.75)') + head(500, LO, 0, 18, 'rgba(255,255,255,.75)');
+  const IY = LO;
+  const tf = finished() ? 0 : (S.current + trainFrac()) / n;
+  const [tx, ty] = finished() ? [CX + 190, IY - 34] : pt(tf, R - RW - 20), deg = finished() ? 0 : ang(tf) * 180 / Math.PI + 90;
+  h += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R - RW - 20) + '" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2" stroke-dasharray="4 8"/>';
+  h += '<g class="train" id="train" style="transform:translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) rotate(' + deg.toFixed(1) + 'deg)"><circle r="30" fill="#000" opacity=".5" filter="url(#glow)"/>' + TRAIN + '</g>';
+  $('#loop').innerHTML = h;
+}
+
+/* render */
+function scrumStreak() { let n = 0; const d = new Date(); while (S.scrumDays.includes(d.toDateString())) { n++; d.setDate(d.getDate() - 1); } return n; }
+function render() {
+  const now = Date.now(), total = sum(S.quests), done = sum(S.quests.filter(x => x.state === 'done'));
+  const daysLeft = Math.max(0, Math.ceil((S.end - now) / DAY));
+  $('#eyebrow').textContent = 'Platform 1 · ' + dshort(S.start) + ' → ' + dshort(S.end);
+  $('#title').textContent = S.name;
+  $('#goal').textContent = S.goal;
+  tiles($('#days'), pad(daysLeft), 2); $('#days').className = 'tiles' + (daysLeft <= 2 && !finished() ? ' late' : '');
+  tiles($('#lap'), pad(S.lap), 2);
+  const tu = Math.min(1, (now - S.start) / (S.end - S.start)), pr = total ? done / total : 0;
+  const st = finished() ? 'READY TO SHIP' : pr + .1 >= tu ? 'ON TIME' : pr + .25 >= tu ? 'RUNNING LATE' : 'DELAYED';
+  const pill = $('#status'); pill.textContent = st; pill.style.color = /ON TIME|SHIP/.test(st) ? 'var(--go)' : st === 'DELAYED' ? 'var(--late)' : 'var(--amber)';
+  const lv = level(), inLv = S.xp % XP_LVL;
+  $('#h-lvl').textContent = 'LVL ' + lv; $('#h-xp').textContent = inLv + ' / ' + XP_LVL + ' XP';
+  $('#h-xpbar').style.width = (inLv / XP_LVL * 100) + '%';
+  $('#h-mi').textContent = S.miles;
+  const comboLive = S.combo > 1 && now - S.lastDone < COMBO_WIN;
+  $('#h-combo').hidden = !comboLive; $('#h-combo-n').textContent = 'x' + Math.min(S.combo, 3);
+  const today = S.scrumDays.includes(dayKey(now));
+  $('#h-scrum').classList.toggle('ready', !today); $('#h-scrum-n').textContent = today ? '✓ ' + scrumStreak() + 'D' : 'GO';
+  $('#snd').innerHTML = S.sound ? '<svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>' : '<svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/></svg>';
+  const cs = STAGES[Math.min(S.current, STAGES.length - 1)];
+  const planOpts = STAGES.map((s, i) => i >= S.current ? '<option value="' + i + '">→ ' + esc(s.short || s.name) + (i === S.current ? ' (now)' : '') + '</option>' : '').join('');
+  $('#backlog').innerHTML = S.backlog.map(q => '<li class="bi" id="t-' + q.id + '"><span class="pts">' + q.pts + '</span><div class="bt"><b>' + esc(q.title) + '</b>' + meta(q) + '</div>' +
+    (finished() ? '<span></span>' : '<select data-plan="' + q.id + '" aria-label="Plan into a stage" title="Plan this into a stage"><option value="">Plan to…</option>' + planOpts + '</select>') +
+    '<span class="acts"><button class="ic-b" data-attach="' + q.id + '" title="Attach a ticket to this one" aria-label="Attach">🔗</button><button class="ic-b" data-bedit="' + q.id + '" title="Edit" aria-label="Edit">✎</button><button class="ic-b" data-rej="' + q.id + '" title="Reject (with attached tickets)" aria-label="Reject">✕</button></span></li>').join('') ||
+    '<li class="empty">Backlog empty · add ideas below, then plan them into a stage</li>';
+  const roots = [...new Set(S.rejected.map(r => r.root))];
+  $('#rejbox').hidden = !roots.length; $('#rej-n').textContent = 'Rejected · ' + S.rejected.length;
+  $('#rejlist').innerHTML = roots.slice().reverse().map(rid => { const fam = S.rejected.filter(r => r.root === rid), r0 = fam.find(r => r.id === rid) || fam[0];
+    return '<div class="rj"><div><s>#' + code(r0) + ' ' + esc(r0.title) + '</s>' + (fam.length > 1 ? ' <small>+ ' + (fam.length - 1) + ' attached</small>' : '') + (r0.reason ? '<small>' + esc(r0.reason) + '</small>' : '') + '</div><button data-restore="' + rid + '">↺ Restore</button></div>'; }).join('');
+  drawLoop();
+  $('#ship-n').textContent = S.shipped.length + ' SHIPPED';
+  $('#shelf').innerHTML = S.shipped.slice().reverse().map(x => '<div class="troph' + (x.fresh ? ' new' : '') + '" title="' + esc(x.title) + '"><i>' + (x.sprint ? '🏆' : '📦') + '</i>' + esc(x.title) + '</div>').join('') ||
+    '<div class="empty" style="grid-column:1/-1">Ship the sprint to fill this shelf</div>';
+  S.shipped.forEach(x => delete x.fresh);
+  $('#badges').innerHTML = BADGES.map(([k, e, l]) => '<span class="bdg' + (S.badges.includes(k) ? ' on' : '') + '">' + e + ' ' + l + '</span>').join('');
+  const vi = Math.min(view, STAGES.length - 1), vs = STAGES[vi], q = stageQ(vi);
+  const tot = sum(q), dn = sum(q.filter(x => x.state === 'done'));
+  $('#m-name').textContent = 'Stage ' + (vi + 1) + ' · ' + vs.name + ' quests';
+  $('#m-meta').textContent = dn + '/' + tot + ' mi · ' + q.filter(x => x.state === 'done').length + '/' + q.length + ' done';
+  $('#tabs').innerHTML = STAGES.map((s, i) => '<button class="tab' + (i === vi ? ' on' : '') + (i === S.current ? ' cur' : '') + '" data-tab="' + i + '" style="--sc:' + s.c + '">' + (i < S.current ? '✓ ' : '') + esc(s.short || s.name) + '<span class="n">' + stageQ(i).length + '</span></button>').join('');
+  const locked = vi !== S.current;
+  $('#lockline').hidden = !locked || finished();
+  $('#lockline').textContent = vi < S.current ? 'Stage cleared ✓ · quests locked' : 'Planned · you can add and edit quests now; they unlock when the train reaches ' + vs.name;
+  $('#qadd').hidden = vi < S.current || finished();
+  $('#qadd-l').textContent = vi === S.current ? 'Add a quest to ' + vs.name + ' (current stage)' : 'Plan a quest for ' + vs.name;
+  renderGate(vi, q, tot, dn);
+  $('#quests').innerHTML = q.map(x => questHTML(x, vs, locked)).join('') || '<div class="empty" style="color:var(--soft);border-color:var(--rule)">' + (finished() ? 'All quests delivered to product' : 'No quests here yet · add one below, or plan one from the backlog') + '</div>';
+  flash = null;
+}
+function questHTML(q, st, locked) {
+  const tilt = ((parseInt(q.id, 36) % 7) - 3) * .3;
+  const btn = q.state === 'todo' ? '<button class="btn d sm" data-start="' + q.id + '">▶ Start</button>'
+    : q.state === 'doing' ? '<button class="btn p sm" data-done="' + q.id + '">✓ Complete</button><button class="btn g sm" data-back="' + q.id + '">Pause</button>'
+    : '<button class="btn g sm" data-undo="' + q.id + '">Undo</button>';
+  return '<article id="t-' + q.id + '" class="q ' + q.state + (locked ? ' locked' : '') + (q.id === flash ? ' pop' : '') + '" style="--sc:' + st.c + ';--tilt:' + tilt + 'deg">' +
+    (q.state === 'done' && locked ? '' : '<button class="q-edit" data-qedit="' + q.id + '" title="Edit quest" aria-label="Edit quest">✎</button>') +
+    '<div class="q-b"><div class="q-k">' + esc(st.short || st.name) + ' quest <span>#' + q.id.slice(0, 4).toUpperCase() + '</span></div><h4>' + esc(q.title) + '</h4>' + meta(q) +
+    '<div class="q-f">' + btn + '<span class="q-st">' + (q.state === 'doing' ? '● In progress' : q.state === 'done' ? '' : 'Ready') + '</span></div>' +
+    (locked && q.state === 'done' ? '' : '<div class="q-x"><button data-attach="' + q.id + '">🔗 Attach ticket</button>' + (q.state === 'done' ? '' : '<button class="rej" data-rej="' + q.id + '">✕ Reject</button>') + '</div>') +
+    (q.state === 'done' ? '<span class="q-stamp">Cleared</span>' : '') + '</div>' +
+    '<div class="q-s"><b>+' + q.pts * 10 + '</b><small>XP</small></div></article>';
+}
+function renderGate(vi, q, tot, dn) {
+  const g = $('#gate');
+  if (finished()) {
+    g.innerHTML = S.quests.length ? '<div class="gate ready"><div><b>Loop complete · ready to ship</b><span>All 4 gates approved. Send it down the green track to Product.</span></div><button class="btn go" id="ship">🚀 Ship it</button></div>'
+      : '<div class="gate ready"><div><b>Shipped · lap ' + S.lap + ' done</b><span>Start the next lap and pull new quests from the backlog.</span></div><button class="btn am" id="next-lap-gate">Start next lap</button></div>';
+    return;
+  }
+  if (vi !== S.current) { g.innerHTML = ''; return; }
+  const st = STAGES[S.current], left = q.filter(x => x.state !== 'done').length;
+  if (q.length && !left) g.innerHTML = '<div class="gate ready"><div><b>' + esc(st.name) + ' gate unlocked</b><span>Every quest cleared. Approve to send the train to ' + esc(STAGES[S.current + 1] ? STAGES[S.current + 1].name : 'the ship yard') + '. +100 XP</span></div><button class="btn go" id="approve">Approve & depart</button></div>';
+  else g.innerHTML = '<div class="gate" style="--sc:' + st.c + '"><div><b>Gate · ' + esc(st.name) + '</b><span>' + (q.length ? left + ' quest' + (left === 1 ? '' : 's') + ' to clear before this gate opens' : 'Add a quest below (or plan one from the backlog) to start this stage') + '</span></div><div class="gbar"><i style="width:' + (tot ? dn / tot * 100 : 0) + '%"></i></div></div>';
+}
+
+/* actions */
+let flash = null, busy = false;
+const find = id => S.quests.find(q => q.id === id);
+function award(xp, miles, rect) {
+  const before = level();
+  S.xp += xp; S.miles += miles || 0;
+  if (rect) floatText('+' + xp + ' XP', rect);
+  if (level() > before) setTimeout(() => levelUp(level()), 500);
+}
+function badge(k) {
+  if (S.badges.includes(k)) return;
+  S.badges.push(k);
+  const b = BADGES.find(x => x[0] === k);
+  setTimeout(() => { if ($('#ovl').hidden) toast('Badge unlocked · ' + b[1] + ' ' + b[2]); sLevel(); confetti(16); }, 700);
+}
+function start(id) { const q = find(id); if (!q) return; q.state = 'doing'; flash = id; sStart(); toast('Quest started · ' + q.title); save(); render(); }
+function complete(id, el) {
+  const q = find(id); if (!q) return;
+  const now = Date.now();
+  S.combo = now - S.lastDone < COMBO_WIN ? S.combo + 1 : 1; S.lastDone = now;
+  const mult = Math.min(S.combo, 3), xp = q.pts * 10 * mult;
+  q.state = 'done'; flash = id;
+  award(xp, q.pts, el.getBoundingClientRect());
+  sStamp(); setTimeout(() => sCoin(mult), 120); confetti(8 + 6 * mult);
+  if (mult > 1) toast('Combo x' + mult + ' · ' + xp + ' XP');
+  if (S.combo >= 3) badge('combo3'); if (level() >= 3) badge('lvl3');
+  save(); render();
+  if (stageQ(S.current).every(x => x.state === 'done')) setTimeout(() => { if (!$('#ovl').hidden) return; sChime(); toast(STAGES[S.current].name + ' gate unlocked · approve it'); }, 900);
+}
+function undo(id) { const q = find(id); if (!q) return; q.state = 'todo'; S.xp = Math.max(0, S.xp - q.pts * 10); S.miles = Math.max(0, S.miles - q.pts); save(); render(); }
+function pause(id) { const q = find(id); if (!q) return; q.state = 'todo'; save(); render(); }
+function pull(id, si) {
+  const i = S.backlog.findIndex(x => x.id === id); if (i < 0 || finished()) return;
+  si = Math.max(S.current, Math.min(STAGES.length - 1, si == null ? S.current : si));
+  const [q] = S.backlog.splice(i, 1); q.st = STAGES[si].key; q.state = 'todo';
+  S.quests.push(q); flash = q.id; view = si; sStart(); toast((si === S.current ? 'Added to ' : 'Planned for ') + STAGES[si].name + ' · ' + q.title); save(); render();
+}
+
+/* editing */
+let mSubmit = null;
+function modal(title, html, onSubmit) {
+  $('#mdl-t').textContent = title; $('#mdl-f').innerHTML = html; mSubmit = onSubmit; $('#mdl').hidden = false;
+  setTimeout(() => { const f = $('#mdl-f input, #mdl-f textarea'); if (f) f.focus(); }, 40);
+}
+function closeModal() { $('#mdl').hidden = true; mSubmit = null; }
+const toDate = ts => { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const ptsSel = v => '<select name="pts">' + [1, 2, 3, 5, 8, 13].map(p => '<option' + (p === v ? ' selected' : '') + '>' + p + '</option>').join('') + '</select>';
+function editSprint(isNew) {
+  const s = isNew ? blank() : S;
+  modal(isNew ? 'New project' : 'Edit project',
+    '<label>Project / sprint name<input name="name" maxlength="40" required value="' + esc(isNew ? '' : s.name) + '" placeholder="e.g. Website relaunch"></label>' +
+    '<label>Goal <small>what does "done" look like?</small><textarea name="goal" maxlength="200" placeholder="e.g. New site live with 3 product pages">' + esc(isNew ? '' : s.goal) + '</textarea></label>' +
+    '<div class="row2"><label>Start<input type="date" name="start" value="' + toDate(s.start) + '"></label><label>End<input type="date" name="end" value="' + toDate(s.end) + '"></label></div>' +
+    (isNew ? '<p style="margin:0;font-size:13px;color:var(--soft)">This replaces the board in this browser. Next you\'ll add quests to the 4 stages: Plan, Design, Build, Review.</p>' : '') +
+    '<div class="foot">' + (isNew ? '' : '<button type="button" class="btn g sm" data-mnew>Start a new project instead</button><span class="sp"></span>') + '<button type="button" class="btn g sm" data-mclose>Cancel</button><button class="btn p sm">' + (isNew ? 'Create project' : 'Save') + '</button></div>',
+    f => {
+      const name = f.name.value.trim(); if (!name) { f.name.focus(); return false; }
+      const st = new Date(f.start.value + 'T00:00').getTime(), en = new Date(f.end.value + 'T23:59').getTime();
+      if (!(en > st)) { alert('The end date must be after the start date.'); return false; }
+      if (isNew) { const keepSound = S.sound; S = blank(name, f.goal.value.trim(), 14); S.sound = keepSound; view = 0; }
+      S.name = name; S.goal = f.goal.value.trim() || 'What does done look like for this sprint?'; S.start = st; S.end = en;
+      save(); render(); sStart(); toast(isNew ? 'Project created · add your first quests' : 'Project updated');
+      if (isNew) setTimeout(() => $('#qadd-t').focus(), 300);
+    });
+}
+/* ---------- tickets: description, attach (parent/child), reject cascade ---------- */
+function all() { return S.backlog.concat(S.quests); }
+function tk(id) { return all().find(x => x.id === id); }
+function children(id) { return all().filter(x => x.parent === id); }
+function family(id) { const out = []; const walk = pid => all().forEach(x => { if (x.parent === pid && !out.includes(x)) { out.push(x); walk(x.id); } }); walk(id); return out; }
+function code(t) { return t.id.slice(0, 4).toUpperCase(); }
+function trunc(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function meta(q) {
+  const p = q.parent && tk(q.parent), kids = children(q.id).length;
+  let h = q.desc ? '<p class="desc">' + esc(q.desc) + '</p>' : '';
+  if (p || kids) h += '<div class="links">' + (p ? '<button class="lnk" data-goto="' + p.id + '" title="Go to the original ticket">↳ #' + code(p) + ' ' + esc(trunc(p.title, 26)) + '</button>' : '') +
+    (kids ? '<span class="lnk kids">🔗 ' + kids + ' attached</span>' : '') + '</div>';
+  return h;
+}
+function attachOpts(selfId, cur) {
+  const banned = new Set(selfId ? [selfId].concat(family(selfId).map(x => x.id)) : []);
+  return '<option value="">None (stand-alone ticket)</option>' + all().filter(x => !banned.has(x.id)).map(x =>
+    '<option value="' + x.id + '"' + (x.id === cur ? ' selected' : '') + '>↳ #' + code(x) + ' ' + esc(trunc(x.title, 40)) + '</option>').join('');
+}
+// an attached ticket goes where its original is (a cleared stage -> the current stage)
+function placeNear(n, p) {
+  const si = S.quests.includes(p) ? STAGES.findIndex(s => s.key === p.st) : -1;
+  if (si >= 0 && !finished()) { const at = Math.max(si, S.current); n.st = STAGES[at].key; n.state = 'todo'; S.quests.push(n); view = at; }
+  else { n.st = null; n.state = 'todo'; S.backlog.push(n); }
+}
+function addAttached(pid) {
+  const p = tk(pid); if (!p) return;
+  const si = S.quests.includes(p) ? Math.max(STAGES.findIndex(s => s.key === p.st), S.current) : -1;
+  const where = si >= 0 && !finished() ? STAGES[si].name : 'Backlog';
+  modal('Attach a ticket to #' + code(p),
+    '<p style="margin:0;font-size:13px;color:var(--soft)">Linked to <b>' + esc(p.title) + '</b>. It goes into <b>' + where + '</b>, and if the original is rejected, this one is rejected with it.</p>' +
+    '<label>Title<input name="title" maxlength="90" required placeholder="e.g. Fix the edge case found in review"></label>' +
+    '<label>Description <small>optional</small><textarea name="desc" maxlength="400" placeholder="What, why, done when…"></textarea></label>' +
+    '<label>Points <small>effort</small>' + ptsSel(3) + '</label>' +
+    '<div class="foot"><span class="sp"></span><button type="button" class="btn g sm" data-mclose>Cancel</button><button class="btn p sm">Attach ticket</button></div>',
+    f => {
+      const t = f.title.value.trim(); if (!t) { f.title.focus(); return false; }
+      const n = { id: uid(), st: null, title: t, desc: f.desc.value.trim(), pts: +f.pts.value, state: 'todo', parent: p.id };
+      placeNear(n, p); flash = n.id; save(); render(); sStart(); toast('Attached to #' + code(p) + ' · ' + where);
+    });
+}
+function askReject(id) {
+  const t = tk(id); if (!t) return; const fam = family(id);
+  modal('Reject ticket #' + code(t),
+    '<p style="margin:0">Reject <b>' + esc(t.title) + '</b>' + (fam.length ? ' and its <b>' + fam.length + ' attached ticket' + (fam.length > 1 ? 's' : '') + '</b>:<br><small style="color:var(--soft)">' + fam.map(x => '#' + code(x) + ' ' + esc(trunc(x.title, 34))).join(' · ') + '</small>' : '') +
+    '<br><small style="color:var(--soft)">They leave the board. You can restore them from <b>Rejected</b> under the backlog.</small></p>' +
+    '<label>Reason <small>optional</small><textarea name="reason" maxlength="200" placeholder="e.g. Out of scope for this sprint"></textarea></label>' +
+    '<div class="foot"><span class="sp"></span><button type="button" class="btn g sm" data-mclose>Cancel</button><button class="btn p sm">Reject' + (fam.length ? ' all ' + (fam.length + 1) : '') + '</button></div>',
+    f => { rejectT(id, f.reason.value.trim()); });
+}
+function rejectT(id, reason) {
+  const root = tk(id); if (!root) return;
+  const fam = [root].concat(family(id));
+  fam.forEach(x => {
+    const inQ = S.quests.includes(x);
+    S.quests = S.quests.filter(y => y !== x); S.backlog = S.backlog.filter(y => y !== x);
+    S.rejected.push(Object.assign({}, x, { root: root.id, from: inQ ? x.st : null, rejectedAt: Date.now(), reason: x === root ? reason : '' }));
+  });
+  save(); render(); sStamp();
+  toast('Rejected #' + code(root) + (fam.length > 1 ? ' + ' + (fam.length - 1) + ' attached' : ''));
+}
+function restoreT(rid) {
+  const fam = S.rejected.filter(r => r.root === rid);
+  S.rejected = S.rejected.filter(r => r.root !== rid);
+  fam.forEach(r => {
+    const t = Object.assign({}, r); const from = t.from; delete t.root; delete t.from; delete t.rejectedAt; delete t.reason;
+    const si = STAGES.findIndex(s => s.key === from);
+    if (si >= S.current && !finished()) { t.st = from; S.quests.push(t); }
+    else { t.st = null; t.state = 'todo'; S.backlog.push(t); }
+  });
+  save(); render(); sStart(); toast('Restored ' + fam.length + ' ticket' + (fam.length > 1 ? 's' : ''));
+}
+function editItem(id) {
+  const q = tk(id); if (!q) return;
+  const inBacklog = S.backlog.includes(q), kids = family(id);
+  const stageOpts = inBacklog
+    ? '<label>Stage<select name="st"><option value="__backlog" selected>Backlog</option>' + STAGES.map((s, i) => i >= S.current && !finished() ? '<option value="' + s.key + '">→ ' + esc(s.name) + '</option>' : '').join('') + '</select></label>'
+    : '<label>Stage<select name="st">' + STAGES.map((s, i) => i >= S.current || s.key === q.st ? '<option value="' + s.key + '"' + (s.key === q.st ? ' selected' : '') + '>' + esc(s.name) + '</option>' : '').join('') + '<option value="__backlog">← Back to backlog</option></select></label>';
+  modal((inBacklog ? 'Edit idea' : 'Edit quest') + ' #' + code(q),
+    '<label>Title<input name="title" maxlength="90" required value="' + esc(q.title) + '"></label>' +
+    '<label>Description <small>travels with the ticket through every stage</small><textarea name="desc" maxlength="400" placeholder="What, why, done when…">' + esc(q.desc || '') + '</textarea></label>' +
+    '<div class="row2"><label>Points <small>effort</small>' + ptsSel(q.pts) + '</label>' + stageOpts + '</div>' +
+    '<label>Attached to <small>original ticket</small><select name="parent">' + attachOpts(id, q.parent) + '</select></label>' +
+    (kids.length ? '<p style="margin:0;font-size:13px;color:var(--soft)">🔗 Attached to this one: ' + kids.map(k => '#' + code(k) + ' ' + esc(trunc(k.title, 30))).join(' · ') + '</p>' : '') +
+    '<div class="foot"><button type="button" class="btn g sm" data-mrej style="color:var(--red)">Reject' + (kids.length ? ' + ' + kids.length + ' attached' : '') + '</button><button type="button" class="btn g sm" data-mdel>Delete</button><span class="sp"></span><button type="button" class="btn g sm" data-mclose>Cancel</button><button class="btn p sm">Save</button></div>',
+    f => {
+      const t = f.title.value.trim(); if (!t) { f.title.focus(); return false; }
+      const oldDone = q.state === 'done' ? q.pts : 0;
+      q.title = t; q.pts = +f.pts.value; q.desc = f.desc.value.trim(); q.parent = f.parent.value || null;
+      if (oldDone) { S.xp = Math.max(0, S.xp + (q.pts - oldDone) * 10); S.miles = Math.max(0, S.miles + q.pts - oldDone); }
+      const to = f.st.value;
+      if (to === '__backlog') { if (!inBacklog) { S.quests = S.quests.filter(x => x !== q); q.st = null; q.state = 'todo'; S.backlog.push(q); } }
+      else if (inBacklog) { S.backlog = S.backlog.filter(x => x !== q); q.st = to; q.state = 'todo'; S.quests.push(q); view = STAGES.findIndex(s => s.key === to); }
+      else if (to !== q.st) { q.st = to; if (STAGES.findIndex(s => s.key === q.st) > S.current) q.state = 'todo'; view = STAGES.findIndex(s => s.key === q.st); }
+      save(); render(); toast('Saved');
+    });
+  $('#mdl-f [data-mdel]').onclick = () => {
+    if (!confirm('Delete "' + q.title + '" permanently?' + (kids.length ? ' Attached tickets stay but are unlinked.' : ''))) return;
+    children(q.id).forEach(c => { c.parent = q.parent || null; });
+    S.backlog = S.backlog.filter(x => x !== q); S.quests = S.quests.filter(x => x !== q);
+    closeModal(); save(); render(); toast('Deleted');
+  };
+  $('#mdl-f [data-mrej]').onclick = () => { closeModal(); askReject(id); };
+}
+function scrum() {
+  if (S.scrumDays.includes(dayKey(Date.now()))) { toast('Stand-up done today · streak ' + scrumStreak() + ' days'); return; }
+  showOverlay('Daily stand-up', '<span class="tiles" id="ov-t"></span>', 'Yesterday: what landed? Today: which quest? Blockers: anything in the way?', '<button class="btn go" id="scrum-ok">Checked in · +30 XP</button>');
+  tiles($('#ov-t'), 'STAND-UP'); sChime();
+}
+function scrumOk() {
+  S.scrumDays.push(dayKey(Date.now())); S.scrumDays = S.scrumDays.slice(-60);
+  hideOverlay(); award(30, 0, $('#h-scrum').getBoundingClientRect()); sCoin(1);
+  if (scrumStreak() >= 3) badge('scrum3');
+  toast('Stand-up done · streak ' + scrumStreak() + ' day' + (scrumStreak() === 1 ? '' : 's'));
+  save(); render();
+}
+function approve() {
+  if (busy) return; busy = true;
+  const st = STAGES[S.current], next = STAGES[S.current + 1];
+  S.approvals++; award(100, 0, null); badge('gate');
+  showOverlay(st.name + ' gate', '<div class="bigstamp">Approved</div>', '+100 XP · next stop ' + (next ? next.name : 'ship yard'), '');
+  sStamp(); confetti(40);
+  let n = 3;
+  setTimeout(function cd() {
+    if (n > 0) { $('#ovl-k').textContent = 'Doors closing'; $('#ovl-mid').innerHTML = '<span class="tiles" id="ov-t"></span>'; tiles($('#ov-t'), String(n), 1); sTick(); n--; setTimeout(cd, 750); return; }
+    $('#ovl-k').textContent = 'Departing'; $('#ovl-mid').innerHTML = '<span class="tiles" id="ov-t"></span>'; tiles($('#ov-t'), next ? 'NEXT ' + (next.short || next.name) : 'SHIP YARD');
+    sWhistle();
+    setTimeout(() => {
+      hideOverlay(); S.current++; view = Math.min(S.current, STAGES.length - 1); busy = false; save(); render();
+      setTimeout(() => { sChime(); toast(finished() ? 'Loop complete · ship it' : 'Now arriving · ' + STAGES[S.current].name); }, 1650);
+    }, 1200);
+  }, 1400);
+}
+function ship() {
+  const pts = sum(S.quests), bonus = 250 + pts * 5;
+  S.quests.forEach(q => S.shipped.push({ title: q.title, fresh: true }));
+  S.shipped.push({ title: S.name + ' · lap ' + S.lap, sprint: true, fresh: true });
+  S.quests = [];
+  award(bonus, 0, null); badge('ship');
+  showOverlay('Delivered to product', '<span class="tiles" id="ov-t"></span>', S.name + ' shipped · +' + bonus + ' XP bonus', '<button class="btn am" id="next-lap">Start next lap</button>');
+  tiles($('#ov-t'), 'SHIPPED!');
+  sLevel(); setTimeout(sChime, 500); confetti(110);
+  save(); render();
+}
+function nextLap() {
+  hideOverlay();
+  S.lap++; const num = (parseInt(S.name.replace(/\D/g, ''), 10) || 0) + 1;
+  S.name = 'Sprint ' + num; S.goal = 'Pull quests from the backlog into each stage and ship lap ' + S.lap + '.';
+  S.start = Date.now(); S.end = Date.now() + 10 * DAY; S.current = 0; view = 0;
+  save(); render(); toast('Lap ' + S.lap + ' · pull quests from the backlog');
+}
+function levelUp(lv) {
+  if (!$('#ovl').hidden) { setTimeout(() => levelUp(lv), 1500); return; }
+  showOverlay('Level up', '<span class="tiles" id="ov-t"></span>', 'Every quest gets you closer to the next level.', '<button class="btn am" id="ov-close">Continue</button>');
+  tiles($('#ov-t'), 'LEVEL ' + lv); sLevel(); confetti(60);
+  if (lv >= 3) badge('lvl3');
+}
+
+/* fx */
+function showOverlay(k, mid, s, btn) { $('#ovl-k').textContent = k; $('#ovl-mid').innerHTML = mid; $('#ovl-s').textContent = s; $('#ovl-btn').innerHTML = btn || ''; $('#ovl').hidden = false; $('#toast').classList.remove('on'); }
+function hideOverlay() { $('#ovl').hidden = true; }
+function floatText(t, r) {
+  const d = document.createElement('div');
+  d.className = 'xpfloat'; d.textContent = t; d.style.left = Math.max(8, Math.min(innerWidth - 120, r.left + r.width / 2 - 40)) + 'px'; d.style.top = r.top + 'px';
+  document.body.appendChild(d);
+  d.animate([{ transform: 'translateY(0) scale(.8)', opacity: 0 }, { transform: 'translateY(-20px) scale(1.15)', opacity: 1, offset: .25 }, { transform: 'translateY(-70px) scale(1)', opacity: 0 }], { duration: 1300, easing: 'ease-out' }).onfinish = () => d.remove();
+}
+function confetti(k) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cols = ['#3D9A5F', '#2F64A8', '#8455B8', '#DA7A2C', '#D4433A', '#F6C64B'], fx = $('#fx');
+  for (let i = 0; i < k; i++) {
+    const d = document.createElement('i'); d.className = 'conf';
+    d.style.left = Math.random() * 100 + 'vw'; d.style.background = cols[i % cols.length];
+    fx.appendChild(d);
+    d.animate([{ transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(' + (innerHeight + 60) + 'px) rotate(' + (360 + Math.random() * 360) + 'deg)' }],
+      { duration: 1600 + Math.random() * 1400, delay: Math.random() * 400, easing: 'cubic-bezier(.3,.1,.6,1)' }).onfinish = () => d.remove();
+  }
+}
+let tT = 0;
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 2600); }
+
+/* events */
+document.addEventListener('click', e => {
+  const seg = e.target.closest('.seg-hit');
+  if (seg) { view = +seg.getAttribute('data-st'); sTick(); render(); $('.mission').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if (e.target.closest('#scrumloop')) { scrum(); return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.start) start(b.dataset.start);
+  else if (b.dataset.done) complete(b.dataset.done, b);
+  else if (b.dataset.back) pause(b.dataset.back);
+  else if (b.dataset.undo) undo(b.dataset.undo);
+  else if (b.dataset.pull) pull(b.dataset.pull);
+  else if (b.dataset.qedit) editItem(b.dataset.qedit);
+  else if (b.dataset.attach) addAttached(b.dataset.attach);
+  else if (b.dataset.rej) askReject(b.dataset.rej);
+  else if (b.dataset.restore) restoreT(b.dataset.restore);
+  else if (b.dataset.goto) { const t = tk(b.dataset.goto); if (t) { if (S.quests.includes(t)) { view = STAGES.findIndex(s => s.key === t.st); render(); } const el = document.getElementById('t-' + t.id); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.remove('hl'); void el.offsetWidth; el.classList.add('hl'); } } }
+  else if (b.dataset.bedit) editItem(b.dataset.bedit);
+  else if (b.dataset.bdel) { const q = S.backlog.find(x => x.id === b.dataset.bdel); if (q && confirm('Delete "' + q.title + '"?')) { S.backlog = S.backlog.filter(x => x !== q); save(); render(); } }
+  else if (b.hasAttribute('data-mclose')) closeModal();
+  else if (b.hasAttribute('data-mnew')) { closeModal(); editSprint(true); }
+  else if (b.id === 'editSprint') editSprint(false);
+  else if (b.id === 'newProj') editSprint(true);
+  else if (b.id === 'tourBtn') openTour();
+  else if (b.dataset.tab) { view = +b.dataset.tab; sTick(); render(); }
+  else if (b.id === 'h-scrum') scrum();
+  else if (b.id === 'scrum-ok') scrumOk();
+  else if (b.id === 'approve') approve();
+  else if (b.id === 'ship') ship();
+  else if (b.id === 'next-lap' || b.id === 'next-lap-gate') nextLap();
+  else if (b.id === 'ov-close') hideOverlay();
+  else if (b.id === 'snd') { S.sound = !S.sound; save(); render(); if (S.sound) sTick(); }
+  else if (b.id === 'reset') { if (!S.quests.length && !S.backlog.length || confirm('Replace this board with the sample project?')) { S = sample(); view = 0; save(); render(); toast('Sample loaded · Sprint 42'); } }
+});
+document.addEventListener('change', e => {
+  const s = e.target.closest('select[data-plan]'); if (s && s.value !== '') pull(s.dataset.plan, +s.value);
+});
+$('#mdl-f').addEventListener('submit', e => { e.preventDefault(); if (mSubmit && mSubmit(e.target) !== false) closeModal(); });
+$('#mdl').addEventListener('click', e => { if (e.target.id === 'mdl') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#mdl').hidden) closeModal(); });
+$('#qadd').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('#qadd-t').value.trim(); if (!t) { $('#qadd-t').focus(); return; }
+  const vi = Math.min(view, STAGES.length - 1); if (vi < S.current) return;
+  const q = { id: uid(), st: STAGES[vi].key, title: t, pts: +$('#qadd-p').value, state: 'todo' };
+  S.quests.push(q); flash = q.id; $('#qadd-t').value = ''; sStart(); save(); render(); $('#qadd-t').focus();
+  toast((vi === S.current ? 'Quest added to ' : 'Planned for ') + STAGES[vi].name);
+});
+$('#badd').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('#badd-t').value.trim(); if (!t) return;
+  S.backlog.push({ id: uid(), st: null, title: t, desc: $('#badd-d').value.trim(), pts: +$('#badd-p').value, state: 'todo', parent: null });
+  $('#badd-t').value = ''; $('#badd-d').value = ''; sStart(); save(); render();
+});
+const TOUR = [
+  { t: null, k: 'Welcome', h: 'Sprint Loop: your project as a game', p: 'A sprint runs through 4 stages, <b>Plan → Design → Build → Review</b>, then ships. Here\'s how to set up your own project in 1 minute. You can skip any time.' },
+  { t: '#newProj', k: 'Step 1', h: 'Start your own project', p: 'Tap <b>+ New project</b>: give it a name, a goal and start/end dates. Already have one? Use <b>✎ Edit project & dates</b> on the sign.' },
+  { t: '.sign', k: 'Step 2', h: 'The departure sign', p: 'Name, goal, <b>days left</b> and status. <b>ON TIME</b> compares work done against time used. Tap <b>✎ Edit project & dates</b> to change any of it.' },
+  { t: '#badd', k: 'Step 3', h: 'Backlog = ideas', p: 'Dump every idea here with a size in points (1 = tiny, 8 = big) and an optional <b>description</b>. The description stays with the ticket through every stage.' },
+  { t: '#backlog', k: 'Step 3b', h: 'Attach & reject', p: '<b>🔗</b> attaches a new ticket to an original one (follow-ups, bugs found in review). <b>✕ Reject</b> removes a ticket <b>and everything attached to it</b>. Rejected tickets can be restored.' },
+  { t: '#backlog', k: 'Step 4', h: 'Plan ideas into stages', p: 'Use <b>Plan to…</b> on an idea to put it in a stage: now, or a later one (it waits there as <b>planned</b>). <b>✎</b> edits, <b>✕</b> deletes.' },
+  { t: '#tabs', k: 'Step 5', h: 'The 4 stages', p: 'Tap a tab (or a segment of the loop) to see its quests. The number is how many are in it. Future stages can be filled in now.' },
+  { t: '#qadd', k: 'Step 6', h: 'Add quests straight to a stage', p: 'Type a task, pick its points, <b>+ Add quest</b>. It lands in the stage you\'re looking at. <b>✎</b> on any quest card edits, moves or deletes it.' },
+  { t: '#quests', k: 'Step 7', h: 'Play the stage', p: '<b>▶ Start</b> a quest, then <b>✓ Complete</b> it for XP. Finish several in 10 minutes for a <b>combo</b> (up to ×3).' },
+  { t: '#gate', k: 'Step 8', h: 'Approve the gate', p: 'When every quest in the stage is done, <b>Approve & depart</b> unlocks. The train moves to the next stage. After Review you <b>Ship it</b> and start the next lap.' },
+  { t: '#h-scrum', k: 'Daily', h: 'Daily stand-up', p: 'Once a day: yesterday, today, blockers. +30 XP and a streak. <b>? Tour</b> replays this guide.' },
+  { t: null, k: 'Ready', h: 'Build your project', p: 'Everything is saved in this browser. Start fresh, or play with the sample first.', end: true },
+];
+let ti = 0;
+function tPlace() {
+  const s = TOUR[ti], el = s.t && $(s.t), hole = $('#tourHole'), bub = $('#tourBub');
+  const vw = innerWidth, vh = innerHeight, bw = Math.min(370, vw - 24);
+  if (!el || !el.getClientRects().length) { hole.style.cssText = 'left:50%;top:50%;width:0;height:0'; bub.style.left = (vw - bw) / 2 + 'px'; bub.style.top = Math.max(12, vh / 2 - bub.offsetHeight / 2) + 'px'; return; }
+  const r = el.getBoundingClientRect(), pad = 6, bh = bub.offsetHeight;
+  const top0 = Math.max(4, r.top - pad), h0 = Math.min(r.height + pad * 2, vh - top0 - 4);
+  hole.style.cssText = 'left:' + (r.left - pad) + 'px;top:' + top0 + 'px;width:' + (r.width + pad * 2) + 'px;height:' + h0 + 'px';
+  let top = r.bottom + 14; if (top + bh > vh - 10) top = r.top - bh - 14; if (top < 10) top = Math.max(10, vh - bh - 12);
+  bub.style.top = top + 'px'; bub.style.left = Math.min(vw - bw - 12, Math.max(12, r.left + r.width / 2 - bw / 2)) + 'px';
+}
+function tShow(i) {
+  ti = i; const s = TOUR[i], last = TOUR.length - 1;
+  $('#tourBub').innerHTML = '<div class="k"><span>' + s.k + '</span><span>' + (i + 1) + '/' + TOUR.length + '</span></div><h3>' + s.h + '</h3><p>' + s.p + '</p><div class="row">' +
+    (s.end ? '<button class="btn p sm" data-t="new">+ New project</button><button class="btn g sm" data-t="sample" style="color:var(--on)">Try the sample</button>'
+      : '<button class="btn p sm" data-t="next">' + (i ? 'Next' : 'Show me') + '</button>' + (i ? '<button class="btn g sm" data-t="back" style="color:var(--on)">Back</button>' : '')) +
+    '<span class="sp"></span>' + (s.end ? '' : '<button class="skip" data-t="skip">Skip tour</button>') + '</div>';
+  const el = s.t && $(s.t); if (el) el.scrollIntoView({ block: 'center' });
+  requestAnimationFrame(() => requestAnimationFrame(tPlace));
+}
+function openTour() { closeModal(); hideOverlay(); $('#tour').hidden = false; tShow(0); }
+function closeTour() { $('#tour').hidden = true; try { localStorage.setItem(KEY + ':tour', '1'); } catch (e) {} }
+$('#tourBub').addEventListener('click', e => {
+  const a = e.target.closest('[data-t]'); if (!a) return;
+  const t = a.dataset.t;
+  if (t === 'next') tShow(Math.min(ti + 1, TOUR.length - 1));
+  else if (t === 'back') tShow(Math.max(0, ti - 1));
+  else if (t === 'skip') closeTour();
+  else if (t === 'new') { closeTour(); editSprint(true); }
+  else if (t === 'sample') { closeTour(); }
+});
+addEventListener('resize', () => { if (!$('#tour').hidden) tPlace(); });
+addEventListener('scroll', () => { if (!$('#tour').hidden) tPlace(); }, { passive: true });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#tour').hidden) closeTour(); });
+let seen = '1'; try { seen = localStorage.getItem(KEY + ':tour'); } catch (e) {}
+if (seen !== '1') setTimeout(openTour, 900);
+setInterval(() => { if (S.combo > 1 && Date.now() - S.lastDone > COMBO_WIN && !$('#h-combo').hidden) render(); }, 15000);
+render();
+})();
+</script>
+</body>
+</html>
